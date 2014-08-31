@@ -17,4 +17,10 @@ Window {
         text: qsTr("This is Vetmup!")
         anchors.centerIn: parent
     }
+
+    Image{
+        source: "Icons/Contact"
+        anchors.centerIn: parent
+
+    }
 }

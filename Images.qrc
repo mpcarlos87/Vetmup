@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/Icons">
+        <file alias="Contact">Resources/Images/Icons/Contact.png</file>
+        <file alias="Next">Resources/Images/Icons/Next.png</file>
+        <file alias="Pause">Resources/Images/Icons/Pause.png</file>
+        <file alias="Play">Resources/Images/Icons/Play.png</file>
+        <file alias="Previous">Resources/Images/Icons/Previous.png</file>
+    </qresource>
+</RCC>
