@@ -2,16 +2,11 @@ import QtQuick 2.2
 import QtQuick.Window 2.1
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.2
-import SongPlayerQML 1.0
 
 Window {
     visible: true
     width: 360
     height: 360
-
-    SongPlayer{
-        id: mySongPlayer
-    }
 
     Item{
     id: mainWindow
@@ -50,7 +45,6 @@ Window {
                     }
                 }
             }
-        onClicked:{ mySongPlayer.buttonClickedQML("C:/music.mp3")}
     }
 
 }
