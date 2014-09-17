@@ -50,7 +50,7 @@ Window {
                     }
                 }
             }
-        onClicked:{ mySongPlayer.buttonClickedQML("C:/music.mp3")}
+        onClicked:{ mySongPlayer.buttonClickedQML("C://music.mp3")}
     }
 
 }

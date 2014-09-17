@@ -24,6 +24,7 @@ SongPlayer::SongPlayer(QObject *parent):
       }
 
       m_audio = new QAudioOutput(format, this);
+       connect(m_audio, SIGNAL(stateChanged(QAudio::State)), this, SLOT(handleStateChanged(QAudio::State)));
 }
 
 SongPlayer::SongPlayer(const SongPlayer &other){
@@ -31,9 +32,32 @@ SongPlayer::SongPlayer(const SongPlayer &other){
 
 void SongPlayer::buttonClickedQML(QString path){
     qDebug()<<"Play "<<path;
-    QFile sourceFile;
+
 
     sourceFile.setFileName(path);
     if(sourceFile.open(QIODevice::ReadOnly))
         m_audio->start(&sourceFile);
+}
+
+void SongPlayer::handleStateChanged(QAudio::State newState)
+{
+    switch (newState) {
+        case QAudio::IdleState:
+            // Finished playing (no more data)
+            m_audio->stop();
+            sourceFile.close();
+            delete m_audio;
+            break;
+
+        case QAudio::StoppedState:
+            // Stopped for other reasons
+            if (m_audio->error() != QAudio::NoError) {
+                // Error handling
+            }
+            break;
+
+        default:
+            // ... other cases as appropriate
+            break;
+    }
 }

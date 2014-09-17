@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDebug>
+#include <QFile>
 #include <QQmlListProperty>
 #include <QtMultimedia/QAudioOutput>
 
@@ -16,6 +17,10 @@ class SongPlayer : public QObject
 
 private:
         QAudioOutput * m_audio;
+        QFile sourceFile;
+
+private slots:
+        void handleStateChanged(QAudio::State);
 };
 
 Q_DECLARE_METATYPE(SongPlayer)
