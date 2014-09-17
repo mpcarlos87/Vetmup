@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QQmlListProperty>
 #include <QtMultimedia/QAudioOutput>
+#include <QMediaPlayer>
 
 class SongPlayer : public QObject
 {
@@ -16,11 +17,8 @@ class SongPlayer : public QObject
         Q_INVOKABLE void buttonClickedQML(QString path);
 
 private:
-        QAudioOutput * m_audio;
+       QMediaPlayer* player;
         QFile sourceFile;
-
-private slots:
-        void handleStateChanged(QAudio::State);
 };
 
 Q_DECLARE_METATYPE(SongPlayer)
