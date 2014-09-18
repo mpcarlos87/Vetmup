@@ -14,7 +14,7 @@ class SongPlayer : public QObject
     public:
         explicit SongPlayer(QObject *parent = 0);
         SongPlayer(const SongPlayer &other);
-        Q_INVOKABLE void buttonClickedQML(QString path);
+        Q_INVOKABLE void buttonClickedQML(QList<QUrl> urls);
 
 private:
        QMediaPlayer* player;

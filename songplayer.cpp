@@ -17,16 +17,15 @@ SongPlayer::SongPlayer(QObject *parent):
 SongPlayer::SongPlayer(const SongPlayer &other){
 }
 
-void SongPlayer::buttonClickedQML(QString path){
-    qDebug()<<"Play "<<path;
+void SongPlayer::buttonClickedQML(QList<QUrl> urls){
 
+    QMediaPlaylist *playlist = new QMediaPlaylist(this);
 
-    sourceFile.setFileName(path);
-    if(sourceFile.open(QIODevice::ReadOnly)){
-        QMediaPlaylist *playlist = new QMediaPlaylist(this);
-        playlist->addMedia(QUrl(path));
-        playlist->setCurrentIndex(1);
-        player->setPlaylist(playlist);
-        player->play();
+    foreach(QUrl songPath,urls){
+        qDebug()<<"Play "<<songPath;
+        playlist->addMedia(songPath);
     }
+    playlist->setCurrentIndex(1);
+    player->setPlaylist(playlist);
+    player->play();
 }

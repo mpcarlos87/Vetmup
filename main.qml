@@ -2,6 +2,7 @@ import QtQuick 2.2
 import QtQuick.Window 2.1
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.2
+import QtQuick.Dialogs 1.2
 import SongPlayerQML 1.0
 
 Window {
@@ -21,6 +22,19 @@ Window {
     Text {
         text: qsTr("This is Vetmup!")
         anchors.centerIn: parent
+    }
+
+    FileDialog {
+        id: fileDialog
+        title: "Please choose a file"
+        selectMultiple: true;
+        onAccepted: {
+            console.log("You chose: " + fileDialog.fileUrls)
+            mySongPlayer.buttonClickedQML(fileDialog.fileUrls)
+        }
+        onRejected: {
+            console.log("Canceled")
+        }
     }
 
     Button{
@@ -50,7 +64,7 @@ Window {
                     }
                 }
             }
-        onClicked:{ mySongPlayer.buttonClickedQML("C://music.mp3")}
+        onClicked:{fileDialog.open(); }
     }
 
 }
