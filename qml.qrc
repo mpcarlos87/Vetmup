@@ -4,6 +4,8 @@
         <file>Style.qml</file>
         <file>VetmupButton.qml</file>
         <file>VetmupButtonText.qml</file>
+        <file>VetmupFileDialog.qml</file>
+        <file>VetmupFolderDialog.qml</file>
     </qresource>
     <qresource prefix="/Icons">
         <file alias="Contact">Resources/Images/Icons/Contact.png</file>
@@ -17,5 +19,6 @@
         <file alias="VolumeHigh">Resources/Images/Icons/VolumeHigh.png</file>
         <file alias="VolumeLow">Resources/Images/Icons/VolumeLow.png</file>
         <file alias="Close">Resources/Images/Icons/Close.png</file>
+        <file alias="Folder">Resources/Images/Icons/Folder.png</file>
     </qresource>
 </RCC>
