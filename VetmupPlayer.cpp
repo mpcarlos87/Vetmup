@@ -1,23 +1,24 @@
-#include "songplayer.h"
+#include "VetmupPlayer.h"
 #include <QFile>
 #include <QtMultimedia/QAudioFormat>
 #include <QtMultimedia/QAudioDeviceInfo>
 #include <QMediaPlaylist>
 
 
-SongPlayer::SongPlayer(QObject *parent):
+VetmupPlayer::VetmupPlayer(QObject *parent):
     QObject(parent)
 {
-      qDebug()<<"SongPlayer::SongPlayer(QObject *parent)";
+      qDebug()<<"VetmupPlayer::VetmupPlayer(QObject *parent)";
 
       player = new QMediaPlayer(this);
 
 }
 
-SongPlayer::SongPlayer(const SongPlayer &other){
+VetmupPlayer::VetmupPlayer(const VetmupPlayer &other){
+    this->player = new QMediaPlayer(other.player);
 }
 
-void SongPlayer::buttonClickedQML(QList<QUrl> urls){
+void VetmupPlayer::buttonClickedQML(QList<QUrl> urls){
 
     QMediaPlaylist *playlist = new QMediaPlaylist(this);
 

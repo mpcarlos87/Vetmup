@@ -5,14 +5,16 @@
 #include <QtQuick/QQuickItem>
 #include <QQmlApplicationEngine>
 
-#include "songplayer.h"
+#include "VetmupPlayer.h"
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
-    qmlRegisterType<SongPlayer>("SongPlayerQML", 1, 0, "SongPlayer");
-    qRegisterMetaType<SongPlayer>("SongPlayer");
+    qmlRegisterType<VetmupPlayer>("VetmupPlayerQML", 1, 0, "VetmupPlayer");
+    qRegisterMetaType<VetmupPlayer>("VetmupPlayer");
+
+    qmlRegisterSingletonType( QUrl("qrc:///Style.qml"), "vetmup.style", 1, 0, "VetmupStyle" );
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:///main.qml")));

@@ -1,6 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>Style.qml</file>
+        <file>VetmupButton.qml</file>
+        <file>VetmupButtonText.qml</file>
     </qresource>
     <qresource prefix="/Icons">
         <file alias="Contact">Resources/Images/Icons/Contact.png</file>
@@ -8,5 +11,11 @@
         <file alias="Pause">Resources/Images/Icons/Pause.png</file>
         <file alias="Play">Resources/Images/Icons/Play.png</file>
         <file alias="Previous">Resources/Images/Icons/Previous.png</file>
+        <file alias="Settings">Resources/Images/Icons/settings.png</file>
+        <file alias="Add">Resources/Images/Icons/Add.png</file>
+        <file alias="Thrash">Resources/Images/Icons/Thrash.png</file>
+        <file alias="VolumeHigh">Resources/Images/Icons/VolumeHigh.png</file>
+        <file alias="VolumeLow">Resources/Images/Icons/VolumeLow.png</file>
+        <file alias="Close">Resources/Images/Icons/Close.png</file>
     </qresource>
 </RCC>

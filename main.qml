@@ -3,15 +3,16 @@ import QtQuick.Window 2.1
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.2
 import QtQuick.Dialogs 1.2
-import SongPlayerQML 1.0
+import VetmupPlayerQML 1.0
+import vetmup.style 1.0
 
 Window {
     visible: true
     width: 360
     height: 360
 
-    SongPlayer{
-        id: mySongPlayer
+    VetmupPlayer{
+        id: myVetmupPlayer
     }
 
     Item{
@@ -21,6 +22,7 @@ Window {
 
     Text {
         text: qsTr("This is Vetmup!")
+        color: VetmupStyle.colourBlue
         anchors.centerIn: parent
     }
 
@@ -30,41 +32,73 @@ Window {
         selectMultiple: true;
         onAccepted: {
             console.log("You chose: " + fileDialog.fileUrls)
-            mySongPlayer.buttonClickedQML(fileDialog.fileUrls)
+            myVetmupPlayer.buttonClickedQML(fileDialog.fileUrls)
         }
         onRejected: {
             console.log("Canceled")
         }
     }
 
-    Button{
-        id: contactButton
-        width: 48;
-        height: 48;
+    VetmupButton{
+        ///Definition and styles
+        id: buttonOpen
         anchors.left: mainWindow.left;
-        anchors.leftMargin: 5;
-        tooltip : qsTr("Contact Me!")
         style: ButtonStyle {
                 background: Rectangle {
-                    implicitWidth: 100
-                    implicitHeight: 25
                     border.width: control.activeFocus ? 2 : 1
-                    border.color: "#f00"
                     radius: 4
-                    gradient: Gradient {
-                        GradientStop { position: 0 ; color: control.pressed ? "#ccc" : "#eee" }
-                        GradientStop { position: 1 ; color: control.pressed ? "#aaa" : "#ccc" }
-                    }
                     Image {
-                        id: contactImage
-                        source: {if(control.hovered && !control.pressed) "qrc:///Icons/Contact";
-                            else if(control.pressed) "qrc:///Icons/Play";
-                        else "qrc:///Icons/Pause";}
+                        id: buttonOpenImage
+                        source: {if(!control.pressed) VetmupStyle.iconAdd;
+                        else VetmupStyle.iconAdd;}
                         anchors.fill: parent
                     }
                 }
             }
+        ///Functions
         onClicked:{fileDialog.open(); }
+    }
+
+    //Button Settings
+    VetmupButton{
+        ///Definition and styles
+        id: buttonExit
+        anchors.right: parent.right;
+        style: ButtonStyle {
+                background: Rectangle {
+                    border.width: control.activeFocus ? 2 : 1
+                    radius: 4
+                    Image {
+                        id: buttonSettingsImage
+                        source: {if(!control.pressed) VetmupStyle.iconClose;
+                        else VetmupStyle.iconClose;}
+                        anchors.fill: parent
+                    }
+                }
+            }
+        ///Functions
+        onClicked:{Qt.quit()}
+    }
+
+    //Button Settings
+    VetmupButton{
+        ///Definition and styles
+        id: buttonSettings
+        anchors.right: buttonExit.left;
+        style: ButtonStyle {
+                background: Rectangle {
+                    border.width: control.activeFocus ? 2 : 1
+                    radius: 4
+                    Image {
+                        id: buttonSettingsImage
+                        source: {if(!control.pressed) VetmupStyle.iconSettings;
+                        else VetmupStyle.iconSettings;}
+                        anchors.fill: parent
+                    }
+                }
+            }
+        ///Functions
+        onClicked:{}
     }
 
 }

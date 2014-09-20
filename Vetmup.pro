@@ -3,7 +3,7 @@ TEMPLATE = app
 QT += qml quick multimedia
 
 SOURCES += main.cpp \
-    songplayer.cpp
+    VetmupPlayer.cpp
 
 RESOURCES += qml.qrc
 
@@ -14,4 +14,4 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 HEADERS += \
-    songplayer.h
+    VetmupPlayer.h

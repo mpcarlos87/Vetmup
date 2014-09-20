@@ -1,5 +1,5 @@
-#ifndef SONGPLAYER_H
-#define SONGPLAYER_H
+#ifndef VETMUPPLAYER_H
+#define VETMUPPLAYER_H
 
 #include <QObject>
 #include <QDebug>
@@ -8,18 +8,17 @@
 #include <QtMultimedia/QAudioOutput>
 #include <QMediaPlayer>
 
-class SongPlayer : public QObject
+class VetmupPlayer : public QObject
 {
     Q_OBJECT
     public:
-        explicit SongPlayer(QObject *parent = 0);
-        SongPlayer(const SongPlayer &other);
+        explicit VetmupPlayer(QObject *parent = 0);
+        VetmupPlayer(const VetmupPlayer &other);
         Q_INVOKABLE void buttonClickedQML(QList<QUrl> urls);
 
 private:
        QMediaPlayer* player;
-        QFile sourceFile;
 };
 
-Q_DECLARE_METATYPE(SongPlayer)
+Q_DECLARE_METATYPE(VetmupPlayer)
 #endif // SONGPLAYER_H
