@@ -17,7 +17,9 @@ VetmupPlayer::~VetmupPlayer(){
     delete m_mediaPlaylist;
 }
 
-VetmupPlayer::VetmupPlayer(const VetmupPlayer &other){
+VetmupPlayer::VetmupPlayer(const VetmupPlayer &other)
+    :QObject(other.parent())
+{
     this->m_player = new QMediaPlayer(other.m_player);
 }
 
