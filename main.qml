@@ -17,10 +17,20 @@ Window {
     Item{
     id: mainWindow
     anchors.fill: parent;
+    MouseArea{
+        anchors.fill: parent;
+        onClicked: {if(myVetmupPlayer.HasSongs())
+                        myVetmupPlayer.PlayPause();
+                    else
+                        fileDialog.open();
+                    }
+
+        }
     }
 
     Text {
-        text: qsTr("This is Vetmup!")
+        id: mainText
+        text: qsTr("This is Vetmup!. Touch to Open or Play/Pause")
         anchors.centerIn: parent
     }
 
@@ -28,7 +38,7 @@ Window {
         id:fileDialog
         onAccepted: {
             console.log("You chose: " + fileDialog.fileUrls)
-            myVetmupPlayer.openFiles(fileDialog.fileUrls)
+            myVetmupPlayer.OpenFiles(fileDialog.fileUrls)
         }
         onRejected: {
             console.log("Canceled")
@@ -39,7 +49,7 @@ Window {
         id:folderDialog
         onAccepted: {
             console.log("You chose the folder: " + folderDialog.fileUrl)
-            myVetmupPlayer.openFolder(folderDialog.fileUrl)
+            myVetmupPlayer.OpenFolder(folderDialog.fileUrl)
         }
         onRejected: {
             console.log("Canceled")
@@ -88,6 +98,28 @@ Window {
         ///Functions
         onClicked:{folderDialog.open(); }
     }
+
+    //Delete Playlist button
+    VetmupButton{
+        ///Definition and styles
+        id: buttonDeletePlaylist
+        anchors.left: buttonOpenFolder.right;
+        style: ButtonStyle {
+                background: Rectangle {
+                    border.width: control.activeFocus ? 2 : 1
+                    radius: 4
+                    Image {
+                        id: buttonDeletePlaylistImage
+                        source: {if(!control.pressed) VetmupStyle.iconThrash;
+                        else VetmupStyle.iconThrash;}
+                        anchors.fill: parent
+                    }
+                }
+            }
+        ///Functions
+        onClicked:{myVetmupPlayer.DeletePlaylist(); }
+    }
+
 
     //Button Settings
     VetmupButton{

@@ -12,6 +12,8 @@
 #include <QQmlListProperty>
 #include <QtMultimedia/QAudioOutput>
 #include <QMediaPlayer>
+#include <QList>
+#include <QMediaContent>
 
 class VetmupPlayer : public QObject
 {
@@ -36,19 +38,39 @@ class VetmupPlayer : public QObject
         /*!
           \param urls The list of urls to open (paths)
         */
-        Q_INVOKABLE void openFiles(QList<QUrl> urls);
+        Q_INVOKABLE void OpenFiles(QList<QUrl> urls);
 
         //! This method opens a directory and all the subdirectories to reproduce (called from QML)
         /*!
           \param url of the directory (path)
         */
-        Q_INVOKABLE void openFolder(QUrl url);
+        Q_INVOKABLE void OpenFolder(QUrl url);
 
+        //! This method is called when the screen is clicked. It plays or pause the songs.
+        /*!
+        */
+        Q_INVOKABLE void PlayPause();
+
+        //! This method deletes all the contents into the playlist and stops the player.
+        /*!
+        */
+        Q_INVOKABLE void DeletePlaylist();
+
+        //! This method returns true if Vetmup has songs into the playlist
+        /*!
+        */
+        Q_INVOKABLE bool HasSongs();
 private:
        QMediaPlayer* m_player;
        QMediaPlaylist* m_mediaPlaylist;
 
-       QStringList OpenFolderRecursively(QString folderPath);
+       QList<QUrl> OpenFolderRecursively(QString folderPath);
+       QList<QMediaContent> GetContent(QList<QUrl>);
+
+private slots:
+       void mediaInsertedSlot(int,int);
+       void	mediaAboutToBeRemovedSlot(int, int);
+       void currentIndexChangedSlot(int);
 };
 
 Q_DECLARE_METATYPE(VetmupPlayer)

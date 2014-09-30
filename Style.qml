@@ -14,4 +14,5 @@ Item {
     readonly property string iconVolumeLow: "qrc:///Icons/VolumeLow"
     readonly property string iconClose: "qrc:///Icons/Close"
     readonly property string iconFolder: "qrc:///Icons/Folder"
+    readonly property string iconThrash: "qrc:///Icons/Thrash"
 }
