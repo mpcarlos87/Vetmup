@@ -1,4 +1,4 @@
-import QtQuick 2.2
+import QtQuick 2.3
 import QtQuick.Window 2.1
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.2
@@ -7,26 +7,71 @@ import vetmup.style 1.0
 
 Window {
     visible: true
-    width: 360
-    height: 360
+    width: 1280
+    height: 720
 
     VetmupPlayer{
         id: myVetmupPlayer
     }
 
     Item{
-    id: mainWindow
-    anchors.fill: parent;
-    MouseArea{
+        id: mainWindow
         anchors.fill: parent;
-        onClicked: {if(myVetmupPlayer.HasSongs())
-                        myVetmupPlayer.PlayPause();
-                    else
-                        fileDialog.open();
-                    }
+        //Region to play/pause
+        Item{
+            id: playPauseWindow
+            width: parent.width/2
+            height: parent.height
+            anchors.left: previousSongWindow.left
+            anchors.right: nextSongWindow.right
+            Rectangle{
+                anchors.fill: parent
+                color:"blue"
+            }
 
+            MouseArea{
+                anchors.fill: parent
+                onClicked: {if(myVetmupPlayer.HasSongs())
+                               myVetmupPlayer.PlayPause();
+                            else
+                               fileDialog.open();
+                            }
+            }
+        }
+        //Region to previous song
+        Item {
+            id: previousSongWindow
+            width: parent.width/4
+            height: parent.height
+            anchors.left: parent.left
+            Rectangle{
+                anchors.fill: parent
+                color:"red"
+            }
+
+            MouseArea{
+                anchors.fill: parent
+                onClicked:{ myVetmupPlayer.PreviousSong();}
+            }
+        }
+         //Region to next song
+        Item {
+            id: nextSongWindow
+            width: parent.width/4
+            height: parent.height
+            anchors.right: parent.right
+            Rectangle{
+                anchors.fill: parent
+                color:"green"
+            }
+
+            MouseArea{
+                anchors.fill: parent
+                onClicked:{ myVetmupPlayer.NextSong();}
+            }
         }
     }
+
 
     Text {
         id: mainText
@@ -120,8 +165,7 @@ Window {
         onClicked:{myVetmupPlayer.DeletePlaylist(); }
     }
 
-
-    //Button Settings
+    //Button Exit
     VetmupButton{
         ///Definition and styles
         id: buttonExit

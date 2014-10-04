@@ -5,18 +5,13 @@
 #include <QMediaPlaylist>
 #include <QDir>
 
-
+/******************CONSTRUCTORS - DESTRUCTOR****************/
 VetmupPlayer::VetmupPlayer(QObject *parent):
     QObject(parent),m_player(new QMediaPlayer(this)),m_mediaPlaylist(new QMediaPlaylist(this))
 {
     connect(m_mediaPlaylist,SIGNAL(mediaInserted(int, int)),this,SLOT(mediaInsertedSlot(int,int)));
     connect(m_mediaPlaylist,SIGNAL(mediaAboutToBeRemoved(int, int)),this,SLOT(mediaAboutToBeRemovedSlot(int,int)));
     connect(m_mediaPlaylist,SIGNAL(currentIndexChanged(int)),this,SLOT(currentIndexChangedSlot(int)));
-}
-
-VetmupPlayer::~VetmupPlayer(){
-    delete m_player;
-    delete m_mediaPlaylist;
 }
 
 VetmupPlayer::VetmupPlayer(const VetmupPlayer &other)
@@ -26,6 +21,15 @@ VetmupPlayer::VetmupPlayer(const VetmupPlayer &other)
 
 }
 
+VetmupPlayer::~VetmupPlayer(){
+    delete m_player;
+    delete m_mediaPlaylist;
+}
+
+/************************************************************/
+
+
+/***************Public methods (called from QML)**************/
 void VetmupPlayer::OpenFiles(QList<QUrl> urls)
 {
     bool isNewList =false;
@@ -43,10 +47,6 @@ void VetmupPlayer::OpenFiles(QList<QUrl> urls)
 
 void VetmupPlayer::OpenFolder(QUrl url)
 {
-    bool isNewList =false;
-    if(!this->HasSongs())
-        isNewList = true;
-
     QStringList nameFilter("*");
     QString localFile = url.toLocalFile();
 
@@ -54,6 +54,61 @@ void VetmupPlayer::OpenFolder(QUrl url)
     OpenFiles(audioFiles);
 }
 
+void VetmupPlayer::PlayPause()
+{
+    QMediaPlayer::State state = m_player->state();
+    switch(state){
+       case QMediaPlayer::PlayingState:
+            m_player->pause();
+            break;
+    case QMediaPlayer::PausedState:
+         m_player->play();
+         break;
+    case QMediaPlayer::StoppedState:
+         m_player->play();
+         break;
+    }
+}
+
+void VetmupPlayer::DeletePlaylist()
+{
+    if(HasSongs())
+    {
+        m_player->stop();
+        m_mediaPlaylist->clear();
+    }
+}
+
+void VetmupPlayer::NextSong()
+{
+    if(HasSongs())
+    {
+        m_player->stop();
+        m_mediaPlaylist->next();
+        m_player->play();
+    }
+}
+
+void VetmupPlayer::PreviousSong()
+{
+    if(HasSongs())
+    {
+        m_player->stop();
+        m_mediaPlaylist->previous();
+        m_player->play();
+    }
+
+}
+
+bool VetmupPlayer::HasSongs(){
+    if(m_mediaPlaylist->mediaCount()>0)
+        return true;
+    else
+        return false;
+}
+/**********************************************************/
+
+/*********************Private methods *********************/
  QList<QUrl> VetmupPlayer::OpenFolderRecursively(QString folderPath)
  {
      QList<QUrl> listToReturn=  QList<QUrl>();
@@ -75,63 +130,40 @@ void VetmupPlayer::OpenFolder(QUrl url)
 
  }
 
- void VetmupPlayer::PlayPause()
- {
-     QMediaPlayer::State state = m_player->state();
-     switch(state){
-        case QMediaPlayer::PlayingState:
-             m_player->pause();
-             break;
-     case QMediaPlayer::PausedState:
-          m_player->play();
-          break;
+ QList<QMediaContent> VetmupPlayer::GetContent(QList<QUrl>listOfSongs){
+     QList<QMediaContent> listOfMedia = QList<QMediaContent>();
+     foreach(QUrl path,listOfSongs)
+     {
+         listOfMedia.append(QMediaContent(path));
      }
+     return listOfMedia;
  }
 
- bool VetmupPlayer::HasSongs(){
-     if(m_mediaPlaylist->mediaCount()>0)
-         return true;
-     else
-         return false;
- }
+ /**********************************************************/
 
-void VetmupPlayer::mediaInsertedSlot(int,int)
+
+ /*********************Private Slots *********************/
+ void VetmupPlayer::mediaInsertedSlot(int,int)
 {
     qDebug()<<"List of songs";
     for(int i = 0; i < m_mediaPlaylist->mediaCount();i++)
     {
         qDebug()<<m_mediaPlaylist->media(i).canonicalUrl();
-
     }
 }
 
 void VetmupPlayer::mediaAboutToBeRemovedSlot(int start, int end)
 {
     for(int i = start; i <= end;i++)
-    {
         qDebug()<<"Deleted: "<<m_mediaPlaylist->media(i).canonicalUrl();
-
-    }
 }
 
 void VetmupPlayer::currentIndexChangedSlot(int index)
 {
     qDebug()<<"Playing: "<<m_mediaPlaylist->media(index).canonicalUrl();
 }
+ /**********************************************************/
 
-QList<QMediaContent> VetmupPlayer::GetContent(QList<QUrl>listOfSongs){
-    QList<QMediaContent> listOfMedia = QList<QMediaContent>();
-    foreach(QUrl path,listOfSongs)
-    {
-        listOfMedia.append(QMediaContent(path));
-    }
-    return listOfMedia;
-}
 
-void VetmupPlayer::DeletePlaylist()
-{
-    if(HasSongs()){
-        m_player->stop();
-        m_mediaPlaylist->clear();
-    }
-}
+
+

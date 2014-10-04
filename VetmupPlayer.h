@@ -56,6 +56,16 @@ class VetmupPlayer : public QObject
         */
         Q_INVOKABLE void DeletePlaylist();
 
+        //! This method starts to play the next song of the list
+        /*!
+        */
+        Q_INVOKABLE void NextSong();
+
+        //! This method starts to play the previous song of the list
+        /*!
+        */
+        Q_INVOKABLE void PreviousSong();
+
         //! This method returns true if Vetmup has songs into the playlist
         /*!
         */
@@ -64,8 +74,19 @@ private:
        QMediaPlayer* m_player;
        QMediaPlaylist* m_mediaPlaylist;
 
+       //! This method does a recursive searching for songs into a folder
+       /*!
+         \param folderPath The path of the folder to search
+         \return The list with the urls of all the songs inside the folder (and child folders)
+       */
        QList<QUrl> OpenFolderRecursively(QString folderPath);
-       QList<QMediaContent> GetContent(QList<QUrl>);
+
+       //! This method creates the media content from the list of paths.
+       /*!
+         \param listOfSongs The list of paths to the songs
+         \return The list with media content to play
+       */
+       QList<QMediaContent> GetContent(QList<QUrl> listOfSongs);
 
 private slots:
        void mediaInsertedSlot(int,int);
