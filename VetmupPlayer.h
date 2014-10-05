@@ -1,6 +1,6 @@
 //!  This class is the responsable to manage the playlist and the player of Vetmup
 /*!
-  A more elaborate class description.
+  This class has a media player and a playlist who manages the list of songs to play on Vetmup.
 */
 
 #ifndef VETMUPPLAYER_H
@@ -20,7 +20,7 @@ class VetmupPlayer : public QObject
 {
     Q_OBJECT
     public:
-        //! A normal member taking two arguments and returning an integer value.
+        //! The constructor of the class.
         /*!
           \param parent The QObject parent of this class
           \return The Vetmup Player
