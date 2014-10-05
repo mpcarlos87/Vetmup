@@ -12,6 +12,14 @@ Window {
 
     VetmupPlayer{
         id: myVetmupPlayer
+        onSongChangedSignal: {
+            timeSlider.value= 0;
+            timeSlider.maximumValue = duration;
+            mainText.text= title;
+        }
+        onSliderPositionChangedSignal:{
+            timeSlider.value = position;
+        }
     }
 
     Item{
@@ -26,7 +34,6 @@ Window {
             anchors.right: nextSongWindow.right
             Rectangle{
                 anchors.fill: parent
-                color:"blue"
             }
 
             MouseArea{
@@ -46,7 +53,7 @@ Window {
             anchors.left: parent.left
             Rectangle{
                 anchors.fill: parent
-                color:"red"
+                color:"gray"
             }
 
             MouseArea{
@@ -62,7 +69,7 @@ Window {
             anchors.right: parent.right
             Rectangle{
                 anchors.fill: parent
-                color:"green"
+                color:"gray"
             }
 
             MouseArea{
@@ -75,6 +82,7 @@ Window {
 
     Text {
         id: mainText
+        font.pointSize: 20
         text: qsTr("This is Vetmup!. Touch to Open or Play/Pause")
         anchors.centerIn: parent
     }
@@ -207,4 +215,10 @@ Window {
         onClicked:{}
     }
 
+    Slider {
+        id: timeSlider
+        width: parent.width
+        anchors.bottom: parent.bottom
+        value:0
+    }
 }

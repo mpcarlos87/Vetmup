@@ -12,6 +12,8 @@ VetmupPlayer::VetmupPlayer(QObject *parent):
     connect(m_mediaPlaylist,SIGNAL(mediaInserted(int, int)),this,SLOT(mediaInsertedSlot(int,int)));
     connect(m_mediaPlaylist,SIGNAL(mediaAboutToBeRemoved(int, int)),this,SLOT(mediaAboutToBeRemovedSlot(int,int)));
     connect(m_mediaPlaylist,SIGNAL(currentIndexChanged(int)),this,SLOT(currentIndexChangedSlot(int)));
+    connect(m_player,SIGNAL(positionChanged(qint64)),this,SLOT(positionChangedSlot(qint64)));
+    connect(m_player,SIGNAL(durationChanged(qint64)),this,SLOT(durationChangedSlot(qint64)));
 }
 
 VetmupPlayer::VetmupPlayer(const VetmupPlayer &other)
@@ -160,9 +162,25 @@ void VetmupPlayer::mediaAboutToBeRemovedSlot(int start, int end)
 
 void VetmupPlayer::currentIndexChangedSlot(int index)
 {
-    qDebug()<<"Playing: "<<m_mediaPlaylist->media(index).canonicalUrl();
+
 }
- /**********************************************************/
+
+void VetmupPlayer::positionChangedSlot(qint64 position){
+    qDebug()<<"void VetmupPlayer::positionChangedSlot(qint64 position)"<<position;
+    emit sliderPositionChangedSignal(position/1000);
+}
+
+void VetmupPlayer::durationChangedSlot(qint64 duration)
+{
+    if(duration >0){
+        QFileInfo fileInformation = QFileInfo(m_mediaPlaylist->currentMedia().canonicalUrl().toString());
+        VetmupSong song =  VetmupSong(fileInformation.fileName(),duration);
+        qDebug()<<"Playing: "<< song.GetTitle() << "\t Duration: "<< QString::number(song.GetDuration());
+        emit songChangedSignal(song.GetTitle(),song.GetDuration());
+    }
+}
+
+/**********************************************************/
 
 
 

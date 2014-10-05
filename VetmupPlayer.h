@@ -14,6 +14,7 @@
 #include <QMediaPlayer>
 #include <QList>
 #include <QMediaContent>
+#include "VetmupSong.h"
 
 class VetmupPlayer : public QObject
 {
@@ -92,6 +93,13 @@ private slots:
        void mediaInsertedSlot(int,int);
        void	mediaAboutToBeRemovedSlot(int, int);
        void currentIndexChangedSlot(int);
+       void positionChangedSlot(qint64 position);
+       void durationChangedSlot(qint64 duration);
+
+signals:
+
+       void songChangedSignal(QString title, qint64 duration);
+       void sliderPositionChangedSignal(qint64 position);
 };
 
 Q_DECLARE_METATYPE(VetmupPlayer)
