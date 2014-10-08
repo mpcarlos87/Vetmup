@@ -221,6 +221,7 @@ Window {
         width: parent.width
         anchors.bottom: parent.bottom
         value:0
+        updateValueWhileDragging: false;
 
         onPressedChanged:{
             console.debug("Pressed changed");
