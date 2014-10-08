@@ -6,7 +6,7 @@ VetmupSong::VetmupSong(QString title, qint64 duration)
 }
 
 VetmupSong::VetmupSong(const VetmupSong &other)
-    :m_duration(other.GetDuration(DurationType::Miliseconds)),m_title(other.GetTitle())
+    :m_duration(other.GetDuration()),m_title(other.GetTitle())
 {
 }
 
@@ -15,12 +15,7 @@ QString VetmupSong::GetTitle()const
     return m_title;
 }
 
-qint64 VetmupSong::GetDuration(DurationType durationType)const
+qint64 VetmupSong::GetDuration()const
 {
-    switch(durationType){
-        case DurationType::Miliseconds:
-            return m_duration;
-        case DurationType::Seconds:
-            return m_duration/1000;
-    }
+    return m_duration;
 }

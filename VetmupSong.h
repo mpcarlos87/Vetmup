@@ -12,11 +12,6 @@ class VetmupSong
 
 public:
 
-    enum DurationType{
-        Miliseconds,
-        Seconds
-    };
-
     //! The constructor of the class.
     /*!
       \param title The title of the Song.
@@ -28,7 +23,7 @@ public:
     ~VetmupSong(){}
 
     QString GetTitle()const;
-    qint64 GetDuration(DurationType durationType= Seconds)const;
+    qint64 GetDuration()const;
 
 private:
 

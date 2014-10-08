@@ -108,6 +108,14 @@ bool VetmupPlayer::HasSongs(){
     else
         return false;
 }
+
+void VetmupPlayer::SetSongTime(int miliseconds)
+{
+    if(m_player->state() == QMediaPlayer::PlayingState){
+        m_player->setPosition(miliseconds);
+    }
+}
+
 /**********************************************************/
 
 /*********************Private methods *********************/
@@ -120,7 +128,13 @@ bool VetmupPlayer::HasSongs(){
 
      foreach(QFileInfo audioFile,audioFiles){
          if(audioFile.isFile() && audioFile.suffix()=="mp3"){
-            QUrl url = QUrl(audioFile.absoluteFilePath());
+             QString path = audioFile.absoluteFilePath();
+             //If we are in android, add file:// to the path
+             //It is necessary to the QMediaContent :/
+             #ifdef __ANDROID_API__
+                 path = path.prepend("file://");
+             #endif
+            QUrl url = QUrl(path);
             listToReturn.append(url);
          }
          else if(audioFile.isDir()){
@@ -167,7 +181,7 @@ void VetmupPlayer::currentIndexChangedSlot(int index)
 
 void VetmupPlayer::positionChangedSlot(qint64 position){
     qDebug()<<"void VetmupPlayer::positionChangedSlot(qint64 position)"<<position;
-    emit sliderPositionChangedSignal(position/1000);
+    emit sliderPositionChangedSignal(position);
 }
 
 void VetmupPlayer::durationChangedSlot(qint64 duration)

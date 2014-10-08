@@ -14,6 +14,7 @@ Window {
         id: myVetmupPlayer
         onSongChangedSignal: {
             timeSlider.value= 0;
+            timeSlider.minimumValue = 0;
             timeSlider.maximumValue = duration;
             mainText.text= title;
         }
@@ -220,5 +221,12 @@ Window {
         width: parent.width
         anchors.bottom: parent.bottom
         value:0
+
+        onPressedChanged:{
+            console.debug("Pressed changed");
+                 if (!pressed){
+                     myVetmupPlayer.SetSongTime(timeSlider.value);
+                 }
+        }
     }
 }

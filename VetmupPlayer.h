@@ -71,6 +71,11 @@ class VetmupPlayer : public QObject
         /*!
         */
         Q_INVOKABLE bool HasSongs();
+
+        //! This method sets the time of the actual song
+        /*!
+        */
+        Q_INVOKABLE void SetSongTime(int miliseconds);
 private:
        QMediaPlayer* m_player;
        QMediaPlaylist* m_mediaPlaylist;
