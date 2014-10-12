@@ -76,9 +76,15 @@ class VetmupPlayer : public QObject
         /*!
         */
         Q_INVOKABLE void SetSongTime(int miliseconds);
+
+        //! This method sets the volume of the VetmupPlayer
+        /*!
+        */
+        Q_INVOKABLE void SetVolume(double volume);
 private:
        QMediaPlayer* m_player;
        QMediaPlaylist* m_mediaPlaylist;
+       qint64 m_playerPosition;
 
        //! This method does a recursive searching for songs into a folder
        /*!

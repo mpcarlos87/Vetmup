@@ -7,20 +7,20 @@
 
 /******************CONSTRUCTORS - DESTRUCTOR****************/
 VetmupPlayer::VetmupPlayer(QObject *parent):
-    QObject(parent),m_player(new QMediaPlayer(this)),m_mediaPlaylist(new QMediaPlaylist(this))
+    QObject(parent),m_player(new QMediaPlayer(this)),m_mediaPlaylist(new QMediaPlaylist(this)),m_playerPosition (0)
 {
     connect(m_mediaPlaylist,SIGNAL(mediaInserted(int, int)),this,SLOT(mediaInsertedSlot(int,int)));
     connect(m_mediaPlaylist,SIGNAL(mediaAboutToBeRemoved(int, int)),this,SLOT(mediaAboutToBeRemovedSlot(int,int)));
     connect(m_mediaPlaylist,SIGNAL(currentIndexChanged(int)),this,SLOT(currentIndexChangedSlot(int)));
     connect(m_player,SIGNAL(positionChanged(qint64)),this,SLOT(positionChangedSlot(qint64)));
     connect(m_player,SIGNAL(durationChanged(qint64)),this,SLOT(durationChangedSlot(qint64)));
+    m_player->setVolume(100);
 }
 
 VetmupPlayer::VetmupPlayer(const VetmupPlayer &other)
-    :QObject(other.parent())
+    :QObject(other.parent()),m_playerPosition (other.m_playerPosition)
 {
     this->m_player = new QMediaPlayer(other.m_player);
-
 }
 
 VetmupPlayer::~VetmupPlayer(){
@@ -61,14 +61,17 @@ void VetmupPlayer::PlayPause()
     QMediaPlayer::State state = m_player->state();
     switch(state){
        case QMediaPlayer::PlayingState:
+            m_playerPosition = m_player->position();
             m_player->pause();
             break;
-    case QMediaPlayer::PausedState:
-         m_player->play();
-         break;
-    case QMediaPlayer::StoppedState:
-         m_player->play();
-         break;
+        case QMediaPlayer::PausedState:
+            m_player->play();
+            m_player->setPosition(m_playerPosition);
+            break;
+        case QMediaPlayer::StoppedState:
+            m_player->play();
+            m_player->setPosition(m_playerPosition);
+            break;
     }
 }
 
@@ -111,9 +114,16 @@ bool VetmupPlayer::HasSongs(){
 
 void VetmupPlayer::SetSongTime(int miliseconds)
 {
-    if(m_player->state() == QMediaPlayer::PlayingState){
-        m_player->setPosition(miliseconds);
+    m_playerPosition = miliseconds;
+    if(m_player->state() == QMediaPlayer::PlayingState)
+    {
+        m_player->setPosition(m_playerPosition);
     }
+}
+
+void VetmupPlayer::SetVolume(double volume)
+{
+    m_player->setVolume(volume);
 }
 
 /**********************************************************/

@@ -19,7 +19,8 @@ Window {
             mainText.text= title;
         }
         onSliderPositionChangedSignal:{
-            timeSlider.value = position;
+            if(!timeSlider.pressed)
+                timeSlider.value = position;
         }
     }
 
@@ -227,6 +228,23 @@ Window {
             console.debug("Pressed changed");
                  if (!pressed){
                      myVetmupPlayer.SetSongTime(timeSlider.value);
+                 }
+        }
+    }
+
+    Slider {
+        id: volumeSlider
+        height: parent.height/2
+        anchors.right: parent.right
+        maximumValue: 100.0;
+        minimumValue: 0.0;
+        value:99.9
+        updateValueWhileDragging: false;
+        orientation: Qt.Vertical;
+
+        onPressedChanged:{
+                 if (!pressed){
+                     myVetmupPlayer.SetVolume(volumeSlider.value);
                  }
         }
     }
