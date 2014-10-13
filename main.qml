@@ -13,7 +13,7 @@ Window {
     VetmupPlayer{
         id: myVetmupPlayer
         onSongChangedSignal: {
-            timeSlider.value= 0;
+            timeSlider.value = 0;
             timeSlider.minimumValue = 0;
             timeSlider.maximumValue = duration;
             mainText.text= title;
@@ -81,12 +81,12 @@ Window {
         }
     }
 
-
     Text {
         id: mainText
         font.pointSize: 20
-        text: qsTr("This is Vetmup!. Touch to Open or Play/Pause")
+        text: qsTr("This is Vetmup!\nTouch to Open or Play/Pause")
         anchors.centerIn: parent
+        horizontalAlignment: Text.AlignHCenter
     }
 
     VetmupFileDialog{
@@ -217,25 +217,29 @@ Window {
         onClicked:{}
     }
 
+    //Time slider
     Slider {
         id: timeSlider
-        width: parent.width
-        anchors.bottom: parent.bottom
+        width: parent.width/2
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: parent.height/4
         value:0
         updateValueWhileDragging: false;
 
         onPressedChanged:{
-            console.debug("Pressed changed");
                  if (!pressed){
                      myVetmupPlayer.SetSongTime(timeSlider.value);
                  }
         }
     }
 
+    //Volume slider
     Slider {
         id: volumeSlider
         height: parent.height/2
         anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
         maximumValue: 100.0;
         minimumValue: 0.0;
         value:99.9

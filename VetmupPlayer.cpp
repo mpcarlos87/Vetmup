@@ -200,7 +200,7 @@ void VetmupPlayer::durationChangedSlot(qint64 duration)
         QFileInfo fileInformation = QFileInfo(m_mediaPlaylist->currentMedia().canonicalUrl().toString());
         VetmupSong song =  VetmupSong(fileInformation.fileName(),duration);
         qDebug()<<"Playing: "<< song.GetTitle() << "\t Duration: "<< QString::number(song.GetDuration());
-        emit songChangedSignal(song.GetTitle(),song.GetDuration());
+        emit songChangedSignal(song.GetTitleToDisplay(),song.GetDuration());
     }
 }
 

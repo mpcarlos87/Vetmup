@@ -24,11 +24,14 @@ public:
 
     QString GetTitle()const;
     qint64 GetDuration()const;
+    QString GetTitleToDisplay() const;
 
 private:
 
     qint64 m_duration;
     QString m_title;
+
+    const int max_length = 15;
 };
 
 #endif // VETMUPSONG_H
