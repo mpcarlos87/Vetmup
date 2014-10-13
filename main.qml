@@ -243,13 +243,12 @@ Window {
         maximumValue: 100.0;
         minimumValue: 0.0;
         value:99.9
-        updateValueWhileDragging: false;
+        updateValueWhileDragging: true;
         orientation: Qt.Vertical;
 
-        onPressedChanged:{
-                 if (!pressed){
-                     myVetmupPlayer.SetVolume(volumeSlider.value);
-                 }
+        onValueChanged:
+        {
+            myVetmupPlayer.SetVolume(volumeSlider.value);
         }
     }
 }
