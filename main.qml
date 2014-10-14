@@ -22,6 +22,17 @@ Window {
             if(!timeSlider.pressed)
                 timeSlider.value = position;
         }
+        onSongAddedSignal:{
+            //var component = Qt.createComponent("VetmupSongElement.qml");
+            //var rect = contactDelegate.createObject(listSongs);
+            //rect.text = "<br>"+title+"</br>";
+            //console.log("Creating component: " + title)
+            //if(rect === null)
+              //  console.log("Error Creating Component: " + title)
+
+            fruitModel.append({"title": title})
+
+        }
     }
 
     Item{
@@ -249,6 +260,39 @@ Window {
         onValueChanged:
         {
             myVetmupPlayer.SetVolume(volumeSlider.value);
+        }
+    }
+
+    Rectangle{
+        id: listSongsRectangle
+        anchors.bottom : parent.bottom;
+        height: parent.height/8;
+        width: parent.width;
+
+        Component {
+                id: contactDelegate
+                Column {
+                    width: listSongsRectangle.width/6; height: listSongsRectangle.height
+
+                       Label {
+                                            text: title
+                                            font.bold: true;
+                       }
+                }
+            }
+
+
+        ListView {
+            id: listSongs
+            orientation: Qt.Horizontal
+            anchors.fill: parent
+            model: fruitModel
+            delegate: contactDelegate
+            highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
+        }
+
+        ListModel {
+            id: fruitModel
         }
     }
 }

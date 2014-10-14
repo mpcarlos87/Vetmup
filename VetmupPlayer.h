@@ -111,6 +111,7 @@ signals:
 
        void songChangedSignal(QString title, qint64 duration);
        void sliderPositionChangedSignal(qint64 position);
+       void songAddedSignal(QString title);
 };
 
 Q_DECLARE_METATYPE(VetmupPlayer)

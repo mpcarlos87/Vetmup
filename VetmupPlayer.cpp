@@ -41,6 +41,12 @@ void VetmupPlayer::OpenFiles(QList<QUrl> urls)
     QList<QMediaContent> listOfContent = GetContent(urls);
     m_mediaPlaylist->addMedia(listOfContent);
 
+    foreach(QMediaContent mediaContent,listOfContent){
+        QFileInfo fileInformation = QFileInfo(mediaContent.canonicalUrl().toString());
+        VetmupSong song =  VetmupSong(fileInformation.fileName(),0);
+        emit songAddedSignal(song.GetTitle());
+    }
+
     if(isNewList){
         m_player->setPlaylist(m_mediaPlaylist);
         m_player->play();
