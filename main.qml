@@ -17,21 +17,20 @@ Window {
             timeSlider.minimumValue = 0;
             timeSlider.maximumValue = duration;
             mainText.text= title;
+            listViewSongs.currentIndex = index;
         }
         onSliderPositionChangedSignal:{
             if(!timeSlider.pressed)
                 timeSlider.value = position;
         }
         onSongAddedSignal:{
-            //var component = Qt.createComponent("VetmupSongElement.qml");
-            //var rect = contactDelegate.createObject(listSongs);
-            //rect.text = "<br>"+title+"</br>";
-            //console.log("Creating component: " + title)
-            //if(rect === null)
-              //  console.log("Error Creating Component: " + title)
-
-            fruitModel.append({"title": title})
-
+            listModelSongs.append({"title": title})
+        }
+        onDeletePlaylistSignal:{
+            listModelSongs.remove(0,listModelSongs.count);
+        }
+        onDeleteSongSignal:{
+            listModelSongs.remove(index);
         }
     }
 
@@ -47,6 +46,7 @@ Window {
             anchors.right: nextSongWindow.right
             Rectangle{
                 anchors.fill: parent
+                color:"orange"
             }
 
             MouseArea{
@@ -66,7 +66,7 @@ Window {
             anchors.left: parent.left
             Rectangle{
                 anchors.fill: parent
-                color:"gray"
+                color: "black";
             }
 
             MouseArea{
@@ -82,7 +82,7 @@ Window {
             anchors.right: parent.right
             Rectangle{
                 anchors.fill: parent
-                color:"gray"
+                color:"black"
             }
 
             MouseArea{
@@ -94,7 +94,7 @@ Window {
 
     Text {
         id: mainText
-        font.pointSize: 20
+        font.pixelSize: 20
         text: qsTr("This is Vetmup!\nTouch to Open or Play/Pause")
         anchors.centerIn: parent
         horizontalAlignment: Text.AlignHCenter
@@ -186,32 +186,11 @@ Window {
         onClicked:{myVetmupPlayer.DeletePlaylist(); }
     }
 
-    //Button Exit
-    VetmupButton{
-        ///Definition and styles
-        id: buttonExit
-        anchors.right: parent.right;
-        style: ButtonStyle {
-                background: Rectangle {
-                    border.width: control.activeFocus ? 2 : 1
-                    radius: 4
-                    Image {
-                        id: buttonExitImage
-                        source: {if(!control.pressed) VetmupStyle.iconClose;
-                        else VetmupStyle.iconClose;}
-                        anchors.fill: parent
-                    }
-                }
-            }
-        ///Functions
-        onClicked:{Qt.quit()}
-    }
-
     //Button Settings
     VetmupButton{
         ///Definition and styles
         id: buttonSettings
-        anchors.right: buttonExit.left;
+        anchors.right: parent.right;
         style: ButtonStyle {
                 background: Rectangle {
                     border.width: control.activeFocus ? 2 : 1
@@ -268,31 +247,44 @@ Window {
         anchors.bottom : parent.bottom;
         height: parent.height/8;
         width: parent.width;
+        color: "#FFA500"
 
         Component {
-                id: contactDelegate
-                Column {
-                    width: listSongsRectangle.width/6; height: listSongsRectangle.height
-
-                       Label {
-                                            text: title
-                                            font.bold: true;
-                       }
+            id: songComponent
+            Item {
+                width: listSongsRectangle.width/6;
+                height: listSongsRectangle.height
+                Label {
+                    text: title
+                    font.pixelSize: 10
+                    font.bold: true;
+                }
+                MouseArea{
+                    anchors.fill: parent;
+                    onClicked: {
+                        myVetmupPlayer.PlaySong(index);
+                    }
+                    onPressAndHold:
+                    {
+                        console.log("ONPRESSED");
+                        myVetmupPlayer.DeleteSong(index);
+                    }
                 }
             }
-
+        }
 
         ListView {
-            id: listSongs
+            id: listViewSongs
             orientation: Qt.Horizontal
             anchors.fill: parent
-            model: fruitModel
-            delegate: contactDelegate
-            highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
+            model: listModelSongs
+            delegate: songComponent
+            highlight: Rectangle { color: "#E59400"; radius: 5 }
+            highlightMoveDuration: 100
         }
 
         ListModel {
-            id: fruitModel
+            id: listModelSongs
         }
     }
 }

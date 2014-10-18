@@ -66,7 +66,16 @@ class VetmupPlayer : public QObject
         /*!
         */
         Q_INVOKABLE void PreviousSong();
-
+        //! This method starts to play the song into the list in the index (index)
+        /*!
+          \param index Index on the playlist of the new song.
+        */
+        Q_INVOKABLE void PlaySong(int index);
+        //! This method deletes the song into the list in the index (index)
+        /*!
+          \param index Index on the playlist of the new song.
+        */
+        Q_INVOKABLE void DeleteSong(int index);
         //! This method returns true if Vetmup has songs into the playlist
         /*!
         */
@@ -103,15 +112,16 @@ private:
 private slots:
        void mediaInsertedSlot(int,int);
        void	mediaAboutToBeRemovedSlot(int, int);
-       void currentIndexChangedSlot(int);
        void positionChangedSlot(qint64 position);
        void durationChangedSlot(qint64 duration);
 
 signals:
 
-       void songChangedSignal(QString title, qint64 duration);
+       void songChangedSignal(QString title, qint64 duration, int index);
        void sliderPositionChangedSignal(qint64 position);
        void songAddedSignal(QString title);
+       void deletePlaylistSignal();
+       void deleteSongSignal(int index);
 };
 
 Q_DECLARE_METATYPE(VetmupPlayer)
