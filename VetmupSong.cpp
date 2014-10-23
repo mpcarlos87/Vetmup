@@ -20,28 +20,3 @@ qint64 VetmupSong::GetDuration()const
 {
     return m_duration;
 }
-
-QString VetmupSong::GetTitleToDisplay(int max_length) const
-{
-    QStringList list = m_title.split(" ");
-    QString titleModified = QString("");
-    int length=0;
-
-    foreach(QString titlePart,list)
-    {
-        titleModified.append(titlePart);
-        length+= titlePart.length();
-
-        if(length > max_length){
-            titleModified.append("\n");
-            length = 0;
-        }
-        else{
-            titleModified+=" ";
-        }
-    }
-
-    return titleModified;
-
-
-}

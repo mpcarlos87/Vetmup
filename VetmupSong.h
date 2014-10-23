@@ -24,7 +24,6 @@ public:
 
     QString GetTitle()const;
     qint64 GetDuration()const;
-    QString GetTitleToDisplay(int max_length) const;
 
 private:
 

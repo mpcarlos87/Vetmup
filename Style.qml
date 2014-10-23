@@ -15,4 +15,6 @@ Item {
     readonly property string iconClose: "qrc:///Icons/Close"
     readonly property string iconFolder: "qrc:///Icons/Folder"
     readonly property string iconThrash: "qrc:///Icons/Thrash"
+    readonly property string colorButtons: "transparent"
+    readonly property string colorButtonsPressed: "#DF7401"
 }

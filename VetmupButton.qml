@@ -5,6 +5,6 @@ import QtQuick.Controls 1.2
 
 Button {
     id: simpleButton
-    width: parent.width/8
-    height: width
+    height: parent.height/2
+    width: parent.height/2
 }

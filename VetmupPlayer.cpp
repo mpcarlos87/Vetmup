@@ -43,7 +43,7 @@ void VetmupPlayer::OpenFiles(QList<QUrl> urls)
     foreach(QMediaContent mediaContent,listOfContent){
         QFileInfo fileInformation = QFileInfo(mediaContent.canonicalUrl().toString());
         VetmupSong song =  VetmupSong(fileInformation.fileName(),0);
-        emit songAddedSignal(song.GetTitleToDisplay(6));
+        emit songAddedSignal(song.GetTitle());
     }
 
     if(isNewList){
@@ -217,7 +217,7 @@ void VetmupPlayer::durationChangedSlot(qint64 duration)
         QFileInfo fileInformation = QFileInfo(m_mediaPlaylist->currentMedia().canonicalUrl().toString());
         VetmupSong song =  VetmupSong(fileInformation.fileName(),duration);
         qDebug()<<"Playing: "<< song.GetTitle() << "\t Duration: "<< QString::number(song.GetDuration());
-        emit songChangedSignal(song.GetTitleToDisplay(12),song.GetDuration(),m_mediaPlaylist->currentIndex());
+        emit songChangedSignal(song.GetTitle(),song.GetDuration(),m_mediaPlaylist->currentIndex());
     }
 }
 
