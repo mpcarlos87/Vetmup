@@ -326,9 +326,10 @@ Window {
 
         Component {
             id: songComponent
-            Item {
+            Rectangle {
                 width: listSongsRectangle.width;
                 height: listSongsRectangle.height/10;
+                color: "transparent"
                 Label {
                     width: parent.width
                     height: parent.height
@@ -349,7 +350,6 @@ Window {
                     }
                     onPressAndHold:
                     {
-                        console.log("ONPRESSED");
                         myVetmupPlayer.DeleteSong(index);
                     }
                 }
@@ -364,6 +364,7 @@ Window {
             delegate: songComponent
             highlight: Rectangle { color: VetmupStyle.colorHighlight; radius: 5 }
             highlightMoveDuration: 100
+            clip: true
         }
 
         ListModel {
