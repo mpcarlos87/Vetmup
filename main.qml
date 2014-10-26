@@ -7,6 +7,7 @@ import VetmupPlayerQML 1.0
 import vetmup.style 1.0
 
 Window {
+    id:main
     visible: true
     width: 1280
     height: 720
@@ -32,9 +33,13 @@ Window {
             listModelSongs.append({"title": title})
         }
         onDeletePlaylistSignal:{
+            mainText.text = qsTr("This is Vetmup!Touch to Open or Play/Pause");
             listModelSongs.remove(0,listModelSongs.count);
         }
         onDeleteSongSignal:{
+            if(!myVetmupPlayer.HasSongs()){
+                mainText.text = qsTr("This is Vetmup!Touch to Open or Play/Pause");
+            }
             listModelSongs.remove(index);
         }
     }
@@ -138,8 +143,8 @@ Window {
     //Main
     Rectangle{
         id: mainWindow
-        width: parent.width*2/3
         height: parent.height*7/8
+        width: parent.width*2/3
         anchors.top: topBar.bottom
         anchors.left: parent.left
         anchors.right: listSongsRectangle.left
@@ -180,7 +185,17 @@ Window {
                         Layout.minimumWidth: parent.width/4;
                         Layout.minimumHeight: parent.height;
                         color: VetmupStyle.colorNormal;
+                        Image{
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: parent.width/2;
+                            height: parent.width/2;
+                            source:  {if(!previousSongMouse.pressed)VetmupStyle.iconPrevious;
+                                else VetmupStyle.iconPreviousPressed;}
+                        }
+
                         MouseArea{
+                            id: previousSongMouse
                             anchors.fill: parent
                             onClicked:{ myVetmupPlayer.PreviousSong();}
                             onPressed: {
@@ -239,7 +254,18 @@ Window {
                        Layout.minimumWidth: parent.width/4;
                        Layout.minimumHeight: parent.height;
                        color:VetmupStyle.colorNormal
+
+                       Image{
+                           anchors.horizontalCenter: parent.horizontalCenter
+                           anchors.verticalCenter: parent.verticalCenter
+                           width: parent.width/2;
+                           height: parent.width/2;
+                           source:  {if(!nextSongMouse.pressed)VetmupStyle.iconNext;
+                               else VetmupStyle.iconNextPressed;}
+                       }
+
                        MouseArea{
+                           id: nextSongMouse
                            anchors.fill: parent
                            onClicked:{ myVetmupPlayer.NextSong();}
 

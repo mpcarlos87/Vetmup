@@ -18,7 +18,7 @@
         <file alias="VolumeHighBlack">Resources/Images/Icons/VolumeHigh.png</file>
         <file alias="VolumeLowBlack">Resources/Images/Icons/VolumeLow.png</file>
         <file alias="CloseBlack">Resources/Images/Icons/Close.png</file>
-        <file alias="Folder">Resources/Images/Icons/Folder.png</file>
+        <file alias="FolderBlack">Resources/Images/Icons/Folder.png</file>
         <file alias="AddWhite">Resources/Images/Icons/AddWhite.png</file>
         <file alias="AddOrange">Resources/Images/Icons/AddOrange.png</file>
         <file alias="FolderOrange">Resources/Images/Icons/FolderOrange.png</file>
@@ -27,6 +27,12 @@
         <file alias="SettingsWhite">Resources/Images/Icons/SettingsWhite.png</file>
         <file alias="ThrashOrange">Resources/Images/Icons/ThrashOrange.png</file>
         <file alias="ThrashWhite">Resources/Images/Icons/ThrashWhite.png</file>
+        <file alias="NextBlack">Resources/Images/Icons/NextBlack.png</file>
+        <file alias="NextOrange">Resources/Images/Icons/NextOrange.png</file>
+        <file alias="NextWhite">Resources/Images/Icons/NextWhite.png</file>
+        <file alias="PreviousBlack">Resources/Images/Icons/PreviousBlack.png</file>
+        <file alias="PreviousOrange">Resources/Images/Icons/PreviousOrange.png</file>
+        <file alias="PreviousWhite">Resources/Images/Icons/PreviousWhite.png</file>
     </qresource>
     <qresource prefix="/Fonts">
         <file alias="Quickhand">Resources/Text/Quikhand.ttf</file>
