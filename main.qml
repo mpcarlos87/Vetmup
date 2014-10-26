@@ -11,6 +11,9 @@ Window {
     width: 1280
     height: 720
 
+    //Load font
+    FontLoader { id: mainFont; source: "Fonts/Quickhand" }
+
     //Player
     VetmupPlayer{
         id: myVetmupPlayer
@@ -39,8 +42,8 @@ Window {
     //Top Bar
     Rectangle{
         id: topBar
-        color:"orange"
-        height: parent.height/6;
+        color: VetmupStyle.colorNormal;
+        height: parent.height/8;
         width: parent.width;
 
         //Open files button
@@ -51,11 +54,12 @@ Window {
             style: ButtonStyle {
                     background: Rectangle {
                         radius: 4
-                        color:{if(buttonOpenFiles.pressed)VetmupStyle.colorButtonsPressed;
+                        color:{if(buttonOpenFiles.pressed)VetmupStyle.colorHighlight;
                         else color:VetmupStyle.colorButtons;}
                         Image {
                             id: buttonOpenFilesImage
-                            source: VetmupStyle.iconAdd;
+                            source: {if(!buttonOpenFiles.pressed)VetmupStyle.iconAdd;
+                                else VetmupStyle.iconAddPressed;}
                             anchors.fill: parent;
                         }
                     }
@@ -72,11 +76,12 @@ Window {
             style: ButtonStyle {
                 background: Rectangle {
                     radius: 4
-                    color:{if(buttonOpenFolder.pressed)VetmupStyle.colorButtonsPressed;
+                    color:{if(buttonOpenFolder.pressed)VetmupStyle.colorHighlight;
                     else color:VetmupStyle.colorButtons;}
                     Image {
                         id: buttonOpenFolderImage
-                        source: VetmupStyle.iconFolder;
+                        source: {if(!buttonOpenFolder.pressed)VetmupStyle.iconFolder;
+                            else VetmupStyle.iconFolderPressed;}
                         anchors.fill: parent;
                     }
                 }
@@ -93,11 +98,12 @@ Window {
             style: ButtonStyle {
                 background: Rectangle {
                     radius: 4
-                    color:{if(buttonDeletePlaylist.pressed)VetmupStyle.colorButtonsPressed;
+                    color:{if(buttonDeletePlaylist.pressed)VetmupStyle.colorHighlight;
                     else color:VetmupStyle.colorButtons;}
                     Image {
                         id: buttonDeletePlaylistImage
-                        source: VetmupStyle.iconThrash;
+                        source: {if(!buttonDeletePlaylist.pressed)VetmupStyle.iconThrash;
+                            else VetmupStyle.iconThrashPressed;}
                         anchors.fill: parent;
                     }
                 }
@@ -114,11 +120,12 @@ Window {
             style: ButtonStyle {
                 background: Rectangle {
                     radius: 4
-                    color:{if(buttonSettings.pressed)VetmupStyle.colorButtonsPressed;
+                    color:{if(buttonSettings.pressed)VetmupStyle.colorHighlight;
                     else color:VetmupStyle.colorButtons;}
                     Image {
                         id: buttonSettingsImage
-                        source: VetmupStyle.iconSettings;
+                        source: {if(!buttonSettings.pressed)VetmupStyle.iconSettings;
+                            else VetmupStyle.iconSettingsPressed;}
                         anchors.fill: parent;
                     }
                 }
@@ -128,89 +135,139 @@ Window {
         }
     }
 
-    //Main Window
-    RowLayout {
-            id: mainWindow
-            anchors.centerIn: parent
-            width: parent.width
-            height: parent.height*4/6
-            spacing: 5
+    //Main
+    Rectangle{
+        id: mainWindow
+        width: parent.width*2/3
+        height: parent.height*7/8
+        anchors.top: topBar.bottom
+        anchors.left: parent.left
+        anchors.right: listSongsRectangle.left
+        color:VetmupStyle.colorNormal
 
-            //Region to previous song
-            Rectangle{
-                    id: previousSongWindow
-                    Layout.fillWidth: true;
-                    Layout.minimumWidth: parent.width/4;
-                    Layout.minimumHeight: parent.height;
-                    color: "orange";
-                    MouseArea{
-                        anchors.fill: parent
-                        onClicked:{ myVetmupPlayer.PreviousSong();}
-                        onPressed: {
-                            parent.color= "#DF7401";
-                        }
-                        onReleased: {
-                            parent.color= "orange";
-                        }
-                    }
+        //Volume slider
+        Slider {
+            id: volumeSlider
+            width: parent.width/2
+            height: parent.height/10
+            anchors.top: parent.top
+            maximumValue: 100.0;
+            minimumValue: 0.0;
+            value:99.9
+            updateValueWhileDragging: true;
+            orientation: Qt.Horizontal;
+            anchors.horizontalCenter: parent.horizontalCenter
+            onValueChanged:
+            {
+                myVetmupPlayer.SetVolume(volumeSlider.value);
             }
+        }
 
-            //Region to play/pause
-            Rectangle{
-                    id: playPauseWindow
-                    Layout.fillWidth: true;
-                    Layout.minimumWidth: parent.width/2;
-                    Layout.minimumHeight: parent.height;
-                    color:"orange"
-                    MouseArea{
-                        anchors.fill: parent
-                        onClicked: {
-                            if(myVetmupPlayer.HasSongs())
-                                       myVetmupPlayer.PlayPause();
-                                    else
-                                       fileDialog.open();
-                                    }
-                        onPressed: {
-                            parent.color= "#DF7401";
+        RowLayout {
+                id: mainRow
+                height: parent.height*8/10;
+                width: parent.width
+                anchors.left: parent.left
+                anchors.top: volumeSlider.bottom
+                anchors.right:parent.right
+                anchors.bottom: timeSlider.top
+                spacing: 5
+
+                //Region to previous song
+                Rectangle{
+                        id: previousSongWindow
+                        Layout.fillWidth: true;
+                        Layout.minimumWidth: parent.width/4;
+                        Layout.minimumHeight: parent.height;
+                        color: VetmupStyle.colorNormal;
+                        MouseArea{
+                            anchors.fill: parent
+                            onClicked:{ myVetmupPlayer.PreviousSong();}
+                            onPressed: {
+                                parent.color= VetmupStyle.colorHighlight;
+                            }
+                            onReleased: {
+                                parent.color= VetmupStyle.colorNormal;
+                            }
                         }
-                        onReleased: {
-                            parent.color= "orange";
+                }
+
+                //Region to play/pause
+                Rectangle{
+                        id: playPauseWindow
+                        Layout.fillWidth: true;
+                        Layout.minimumWidth: parent.width/2;
+                        Layout.minimumHeight: parent.height;
+                        color:VetmupStyle.colorNormal
+                        MouseArea{
+                            anchors.fill: parent
+                            onClicked: {
+                                if(myVetmupPlayer.HasSongs())
+                                           myVetmupPlayer.PlayPause();
+                                        else
+                                           fileDialog.open();
+                                        }
+                            onPressed: {
+                                parent.color= VetmupStyle.colorHighlight;
+                            }
+                            onReleased: {
+                                parent.color= VetmupStyle.colorNormal;
+                            }
                         }
-                    }
-            }
 
-            //Region to next song
-            Rectangle{
-                   id: nextSongWindow
-                   Layout.fillWidth: true
-                   Layout.minimumWidth: parent.width/4;
-                   Layout.minimumHeight: parent.height;
-                   color:"orange"
-                   MouseArea{
-                       anchors.fill: parent
-                       onClicked:{ myVetmupPlayer.NextSong();}
+                        //Main Text
+                        Text {
+                            id: mainText
+                            width: parent.width
+                            height: parent.height
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            font.family: mainFont.name;
+                            font.pixelSize: parent.height/15;
+                            maximumLineCount: 6
+                            wrapMode: Text.Wrap
+                            text: qsTr("This is Vetmup!Touch to Open or Play/Pause")
+                            anchors.centerIn: parent
+                            color: VetmupStyle.colorText
+                        }
+                }
 
-                       onPressed: {
-                           parent.color= "#DF7401";
+                //Region to next song
+                Rectangle{
+                       id: nextSongWindow
+                       Layout.fillWidth: true
+                       Layout.minimumWidth: parent.width/4;
+                       Layout.minimumHeight: parent.height;
+                       color:VetmupStyle.colorNormal
+                       MouseArea{
+                           anchors.fill: parent
+                           onClicked:{ myVetmupPlayer.NextSong();}
+
+                           onPressed: {
+                               parent.color= VetmupStyle.colorHighlight;
+                           }
+                           onReleased: {
+                               parent.color= VetmupStyle.colorNormal;
+                           }
                        }
-                       onReleased: {
-                           parent.color= "orange";
-                       }
-                   }
-            }
-    }
+                }
+        }
 
-    //Main Text
-    Text {
-        id: mainText
-        width: playPauseWindow.width
-        height: playPauseWindow.height
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        font.pixelSize: 18
-        wrapMode: Text.Wrap
-        text: qsTr("This is Vetmup!Touch to Open or Play/Pause")
-        anchors.centerIn: parent
+        Slider {
+            id: timeSlider
+            width: parent.width/1.5
+            height: parent.height/10
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            value:0
+            updateValueWhileDragging: false;
+
+            onPressedChanged:{
+                     if (!pressed){
+                         myVetmupPlayer.SetSongTime(timeSlider.value);
+                     }
+            }
+        }
     }
 
     //File Dialog
@@ -229,62 +286,32 @@ Window {
         }
     }
 
-
-    //Volume slider
-    Slider {
-        id: volumeSlider
-        width: parent.width/5
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -parent.height/4
-        maximumValue: 100.0;
-        minimumValue: 0.0;
-        value:99.9
-        updateValueWhileDragging: true;
-        orientation: Qt.Horizontal;
-        onValueChanged:
-        {
-            myVetmupPlayer.SetVolume(volumeSlider.value);
-        }
-    }
-    //Time slider
-    Slider {
-        id: timeSlider
-        width: parent.width/3
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: parent.height/4
-        value:0
-        updateValueWhileDragging: false;
-
-        onPressedChanged:{
-                 if (!pressed){
-                     myVetmupPlayer.SetSongTime(timeSlider.value);
-                 }
-        }
-    }
-
+    //List of songs
     Rectangle{
         id: listSongsRectangle
-        anchors.bottom : parent.bottom;
-        height: parent.height/6;
-        width: parent.width;
-        color: "#FFA500"
+        anchors.top : topBar.bottom
+        anchors.right: parent.right
+        height: parent.height*7/8;
+        width: parent.width/3;
+        color:  VetmupStyle.colorNormal;
 
         Component {
             id: songComponent
             Item {
-                width: listSongsRectangle.width/6;
-                height: listSongsRectangle.height
+                width: listSongsRectangle.width;
+                height: listSongsRectangle.height/10;
                 Label {
                     width: parent.width
                     height: parent.height
-                    horizontalAlignment: Text.AlignHCenter
+                    horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
                     text: title
                     wrapMode: Text.Wrap
-                    font.pixelSize: 10
+                    maximumLineCount : 2
+                    font.family: mainFont.name;
+                    font.pixelSize: Math.max(parent.height/4,18)
                     font.bold: true;
+                    color: VetmupStyle.colorText;
                 }
                 MouseArea{
                     anchors.fill: parent;
@@ -302,11 +329,11 @@ Window {
 
         ListView {
             id: listViewSongs
-            orientation: Qt.Horizontal
+            orientation: Qt.Vertical
             anchors.fill: parent
             model: listModelSongs
             delegate: songComponent
-            highlight: Rectangle { color: "#E59400"; radius: 5 }
+            highlight: Rectangle { color: VetmupStyle.colorHighlight; radius: 5 }
             highlightMoveDuration: 100
         }
 

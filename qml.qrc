@@ -9,17 +9,26 @@
         <file>VetmupSongElement.qml</file>
     </qresource>
     <qresource prefix="/Icons">
-        <file alias="Contact">Resources/Images/Icons/Contact.png</file>
-        <file alias="Next">Resources/Images/Icons/Next.png</file>
-        <file alias="Pause">Resources/Images/Icons/Pause.png</file>
-        <file alias="Play">Resources/Images/Icons/Play.png</file>
-        <file alias="Previous">Resources/Images/Icons/Previous.png</file>
-        <file alias="Settings">Resources/Images/Icons/settings.png</file>
-        <file alias="Add">Resources/Images/Icons/Add.png</file>
-        <file alias="Thrash">Resources/Images/Icons/Thrash.png</file>
-        <file alias="VolumeHigh">Resources/Images/Icons/VolumeHigh.png</file>
-        <file alias="VolumeLow">Resources/Images/Icons/VolumeLow.png</file>
-        <file alias="Close">Resources/Images/Icons/Close.png</file>
+        <file alias="ContactBlack">Resources/Images/Icons/Contact.png</file>
+        <file alias="PauseBlack">Resources/Images/Icons/Pause.png</file>
+        <file alias="PlayBlack">Resources/Images/Icons/Play.png</file>
+        <file alias="SettingsBlack">Resources/Images/Icons/settings.png</file>
+        <file alias="AddBlack">Resources/Images/Icons/Add.png</file>
+        <file alias="ThrashBlack">Resources/Images/Icons/Thrash.png</file>
+        <file alias="VolumeHighBlack">Resources/Images/Icons/VolumeHigh.png</file>
+        <file alias="VolumeLowBlack">Resources/Images/Icons/VolumeLow.png</file>
+        <file alias="CloseBlack">Resources/Images/Icons/Close.png</file>
         <file alias="Folder">Resources/Images/Icons/Folder.png</file>
+        <file alias="AddWhite">Resources/Images/Icons/AddWhite.png</file>
+        <file alias="AddOrange">Resources/Images/Icons/AddOrange.png</file>
+        <file alias="FolderOrange">Resources/Images/Icons/FolderOrange.png</file>
+        <file alias="FolderWhite">Resources/Images/Icons/FolderWhite.png</file>
+        <file alias="SettingsOrange">Resources/Images/Icons/SettingsOrange.png</file>
+        <file alias="SettingsWhite">Resources/Images/Icons/SettingsWhite.png</file>
+        <file alias="ThrashOrange">Resources/Images/Icons/ThrashOrange.png</file>
+        <file alias="ThrashWhite">Resources/Images/Icons/ThrashWhite.png</file>
+    </qresource>
+    <qresource prefix="/Fonts">
+        <file alias="Quickhand">Resources/Text/Quikhand.ttf</file>
     </qresource>
 </RCC>
