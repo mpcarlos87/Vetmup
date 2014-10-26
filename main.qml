@@ -30,14 +30,17 @@ Window {
                 timeSlider.value = position;
         }
         onSongAddedSignal:{
+            listSongsRectangle.width = Qt.binding(function() { return main.width/3; })
             listModelSongs.append({"title": title})
         }
         onDeletePlaylistSignal:{
+            listSongsRectangle.width = 0;
             mainText.text = qsTr("This is Vetmup!Touch to Open or Play/Pause");
             listModelSongs.remove(0,listModelSongs.count);
         }
         onDeleteSongSignal:{
             if(!myVetmupPlayer.HasSongs()){
+                listSongsRectangle.width = 0;
                 mainText.text = qsTr("This is Vetmup!Touch to Open or Play/Pause");
             }
             listModelSongs.remove(index);
@@ -318,7 +321,7 @@ Window {
         anchors.top : topBar.bottom
         anchors.right: parent.right
         height: parent.height*7/8;
-        width: parent.width/3;
+        width: 0;
         color:  VetmupStyle.colorNormal;
 
         Component {
