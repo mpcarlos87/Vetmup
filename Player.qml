@@ -23,8 +23,7 @@ Rectangle{
                     style: ButtonStyle {
                             background: Rectangle {
                                 radius: 4
-                                color:{if(buttonOpenFiles.pressed)VetmupStyle.colorHighlight;
-                                else color:VetmupStyle.colorButtons;}
+                                color:VetmupStyle.colorButtons;
                                 Image {
                                     id: buttonOpenFilesImage
                                     source: {if(!buttonOpenFiles.pressed)VetmupStyle.iconAdd;
@@ -45,8 +44,7 @@ Rectangle{
                     style: ButtonStyle {
                         background: Rectangle {
                             radius: 4
-                            color:{if(buttonOpenFolder.pressed)VetmupStyle.colorHighlight;
-                            else color:VetmupStyle.colorButtons;}
+                            color:VetmupStyle.colorButtons;
                             Image {
                                 id: buttonOpenFolderImage
                                 source: {if(!buttonOpenFolder.pressed)VetmupStyle.iconFolder;
@@ -67,8 +65,7 @@ Rectangle{
                     style: ButtonStyle {
                         background: Rectangle {
                             radius: 4
-                            color:{if(buttonDeletePlaylist.pressed)VetmupStyle.colorHighlight;
-                            else color:VetmupStyle.colorButtons;}
+                            color:VetmupStyle.colorButtons;
                             Image {
                                 id: buttonDeletePlaylistImage
                                 source: {if(!buttonDeletePlaylist.pressed)VetmupStyle.iconThrash;
@@ -90,26 +87,69 @@ Rectangle{
                 anchors.bottom: parent.bottom
                 color:VetmupStyle.colorNormal
 
-                //Volume slider
-                Slider {
-                    id: volumeSlider
-                    width: parent.width/2
-                    height: parent.height/10
-                    anchors.top: parent.top
-                    maximumValue: 100.0;
-                    minimumValue: 0.0;
-                    value:99.9
-                    updateValueWhileDragging: true;
-                    orientation: Qt.Horizontal;
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    onValueChanged:
-                    {
-                        myVetmupPlayer.SetVolume(volumeSlider.value);
-                    }
+                //Top Row of the MainWindow of the Player
+                RowLayout {
+                        id: topRow
+                        height: parent.height/10;
+                        width: parent.width
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        anchors.right:parent.right
+                        anchors.bottom: mainRow.top
+                        //Volume Low Image
+                        Rectangle{
+                            width: parent.height
+                            height: parent.height
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: volumeSlider.left
+                            anchors.rightMargin: 10
+                            color: "transparent"
+                            Image{
+                                anchors.fill: parent
+                                fillMode: Image.Stretch
+                                sourceSize.height: parent.height
+                                sourceSize.width: parent.width
+                                source:"qrc:///Icons/VolumeLowWhite"
+                            }
+                        }
+                        //Volume Slider
+                        Slider {
+                            id: volumeSlider
+                            height: parent.height
+                            Layout.minimumWidth: parent.width/2;
+                            Layout.minimumHeight: parent.height;
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            maximumValue: 100.0;
+                            minimumValue: 0.0;
+                            value:99.9
+                            updateValueWhileDragging: true;
+                            orientation: Qt.Horizontal;
+                            onValueChanged:
+                            {
+                                myVetmupPlayer.SetVolume(volumeSlider.value);
+                            }
+                        }
+                        //Volume High Image
+                        Rectangle{
+                            width: parent.height
+                            height: parent.height
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.left: volumeSlider.right
+                            anchors.leftMargin: 10
+                            color: "transparent"
+                            Image{
+                                anchors.fill: parent
+                                fillMode: Image.Stretch
+                                sourceSize.height: parent.height
+                                sourceSize.width: parent.width
+                                source:"qrc:///Icons/VolumeHighWhite"
+                            }
+                        }
                 }
 
                 RowLayout {
-                        id: mainRow
+                        id: middleRow
                         height: parent.height*8/10;
                         width: parent.width
                         anchors.left: parent.left
@@ -137,9 +177,6 @@ Rectangle{
                                     id: previousSongMouse
                                     anchors.fill: parent
                                     onClicked:{ myVetmupPlayer.PreviousSong();}
-                                    onPressed: {
-                                        parent.color= VetmupStyle.colorHighlight;
-                                    }
                                     onReleased: {
                                         parent.color= VetmupStyle.colorNormal;
                                     }
@@ -162,10 +199,11 @@ Rectangle{
                                                    fileDialog.open();
                                                 }
                                     onPressed: {
-                                        parent.color= VetmupStyle.colorHighlight;
+                                        mainText.color= VetmupStyle.colorTextSelected;
                                     }
                                     onReleased: {
                                         parent.color= VetmupStyle.colorNormal;
+                                        mainText.color= VetmupStyle.colorText;
                                     }
                                 }
 
@@ -207,10 +245,6 @@ Rectangle{
                                    id: nextSongMouse
                                    anchors.fill: parent
                                    onClicked:{ myVetmupPlayer.NextSong();}
-
-                                   onPressed: {
-                                       parent.color= VetmupStyle.colorHighlight;
-                                   }
                                    onReleased: {
                                        parent.color= VetmupStyle.colorNormal;
                                    }
@@ -239,7 +273,7 @@ Rectangle{
                         Slider {
                             id: timeSlider
                             height: parent.height
-                            Layout.minimumWidth: parent.width/1.5;
+                            Layout.minimumWidth: parent.width/1.8;
                             Layout.minimumHeight: parent.height;
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.horizontalCenter: parent.horizontalCenter
