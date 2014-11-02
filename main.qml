@@ -27,7 +27,7 @@ Window {
             tabPlayer.textTimeSliderTotal = durationText;
         }
         onSliderPositionChangedSignal:{
-            if(!tabPlayer.children[0].children[1].children[2].pressed){
+            if(!tabPlayer.children[0].children[1].children[2].children[1].pressed){
                 tabPlayer.timeSliderValue = position;
                 tabPlayer.textTimeSliderCurrent = positionText;
             }
