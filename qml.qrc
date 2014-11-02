@@ -7,6 +7,8 @@
         <file>VetmupFileDialog.qml</file>
         <file>VetmupFolderDialog.qml</file>
         <file>VetmupSongElement.qml</file>
+        <file>Player.qml</file>
+        <file>Playlist.qml</file>
     </qresource>
     <qresource prefix="/Icons">
         <file alias="ContactBlack">Resources/Images/Icons/Contact.png</file>

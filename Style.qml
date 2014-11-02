@@ -28,4 +28,6 @@ Item {
     readonly property string colorNormal: "#1C1C1C"
     readonly property string colorTextSelected: "#CC8400"
     readonly property string colorText: "#FFFFFF"
+    readonly property string textDefaultPlayer:qsTr("This is Vetmup!Touch to Open or Play/Pause")
+    readonly property string textDefaultTimeSlider:""
 }

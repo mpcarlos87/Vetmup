@@ -3,6 +3,8 @@
 #include <QtMultimedia/QAudioFormat>
 #include <QtMultimedia/QAudioDeviceInfo>
 #include <QMediaPlaylist>
+#include <QMediaMetaData>
+#include <QTime>
 #include <QDir>
 
 /******************CONSTRUCTORS - DESTRUCTOR****************/
@@ -40,9 +42,11 @@ void VetmupPlayer::OpenFiles(QList<QUrl> urls)
     QList<QMediaContent> listOfContent = GetContent(urls);
     m_mediaPlaylist->addMedia(listOfContent);
 
+
+    QMediaPlayer playerForMetadata;
     foreach(QMediaContent mediaContent,listOfContent){
         QFileInfo fileInformation = QFileInfo(mediaContent.canonicalUrl().toString());
-        VetmupSong song =  VetmupSong(fileInformation.fileName(),0);
+        VetmupSong song =  VetmupSong(fileInformation.baseName(),0);
         emit songAddedSignal(song.GetTitle());
     }
 
@@ -187,6 +191,14 @@ void VetmupPlayer::SetVolume(double volume)
      return listOfMedia;
  }
 
+ QString VetmupPlayer::GetTimeString(int mseconds){
+     int totalSeconds = mseconds/1000;
+     int hours = totalSeconds/3600;
+     int minutes = totalSeconds%3600/60;
+     int seconds = totalSeconds%3600%60;
+     QTime time(hours,minutes,seconds);
+     return time.toString("mm:ss");
+ }
  /**********************************************************/
 
 
@@ -208,21 +220,22 @@ void VetmupPlayer::mediaAboutToBeRemovedSlot(int start, int end)
 
 void VetmupPlayer::positionChangedSlot(qint64 position){
     qDebug()<<"void VetmupPlayer::positionChangedSlot(qint64 position)"<<position;
-    emit sliderPositionChangedSignal(position);
+    QString timeString = GetTimeString(position);
+    emit sliderPositionChangedSignal(position,timeString);
 }
 
 void VetmupPlayer::durationChangedSlot(qint64 duration)
 {
     if(duration >0){
         QFileInfo fileInformation = QFileInfo(m_mediaPlaylist->currentMedia().canonicalUrl().toString());
-        VetmupSong song =  VetmupSong(fileInformation.fileName(),duration);
+        VetmupSong song =  VetmupSong(fileInformation.baseName(),duration);
         qDebug()<<"Playing: "<< song.GetTitle() << "\t Duration: "<< QString::number(song.GetDuration());
-        emit songChangedSignal(song.GetTitle(),song.GetDuration(),m_mediaPlaylist->currentIndex());
+        QString durationString = GetTimeString(duration);
+        emit songChangedSignal(song.GetTitle(),song.GetDuration(),durationString,m_mediaPlaylist->currentIndex());
     }
 }
 
 /**********************************************************/
-
 
 
 

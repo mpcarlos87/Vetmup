@@ -109,6 +109,13 @@ private:
        */
        QList<QMediaContent> GetContent(QList<QUrl> listOfSongs);
 
+       //! Process the time formatted to the vetmup UI
+       /*!
+         \param mseconds The miliseconds of the song / current moment
+         \return The String with the time in 00:00:00 format.
+       */
+       QString GetTimeString(int mseconds);
+
 private slots:
        void mediaInsertedSlot(int,int);
        void	mediaAboutToBeRemovedSlot(int, int);
@@ -117,8 +124,8 @@ private slots:
 
 signals:
 
-       void songChangedSignal(QString title, qint64 duration, int index);
-       void sliderPositionChangedSignal(qint64 position);
+       void songChangedSignal(QString title, qint64 duration, QString durationText, int index);
+       void sliderPositionChangedSignal(qint64 position,QString positionText);
        void songAddedSignal(QString title);
        void deletePlaylistSignal();
        void deleteSongSignal(int index);
