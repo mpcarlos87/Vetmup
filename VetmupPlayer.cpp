@@ -154,6 +154,18 @@ void VetmupPlayer::SetVolume(double volume)
     m_player->setVolume(volume);
 }
 
+void VetmupPlayer::SavePlaylist(QUrl file)
+{
+}
+
+void VetmupPlayer::ShufflePlaylist(bool enable)
+{
+    if(enable)
+        m_mediaPlaylist->setPlaybackMode(QMediaPlaylist::Random);
+    else
+        m_mediaPlaylist->setPlaybackMode(QMediaPlaylist::Loop);
+}
+
 /**********************************************************/
 
 /*********************Private methods *********************/

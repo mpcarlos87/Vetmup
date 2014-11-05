@@ -90,6 +90,18 @@ class VetmupPlayer : public QObject
         /*!
         */
         Q_INVOKABLE void SetVolume(double volume);
+
+        //! This method saves the current playlist into the file determined.
+        /*!
+          \param file Path/Name of the new file.
+        */
+        Q_INVOKABLE void SavePlaylist(QUrl file);
+
+        //! Enable or Disable the shuffle of the current playlist
+        /*!
+          \param enable If is enabled or not
+        */
+        Q_INVOKABLE void ShufflePlaylist(bool enable);
 private:
        QMediaPlayer* m_player;
        QMediaPlaylist* m_mediaPlaylist;

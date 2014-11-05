@@ -40,7 +40,7 @@ Rectangle{
                 VetmupButton{
                     ///Definition and styles
                     id: buttonOpenFolder
-                    anchors.horizontalCenter: parent.horizontalCenter;
+                    anchors.right: buttonSavePlaylist.left
                     style: ButtonStyle {
                         background: Rectangle {
                             radius: 4
@@ -57,11 +57,32 @@ Rectangle{
                     onClicked:{folderDialog.open(); }
                 }
 
+                //Save Playlist button
+                VetmupButton{
+                    ///Definition and styles
+                    id: buttonSavePlaylist
+                    anchors.horizontalCenter: parent.horizontalCenter;
+                    style: ButtonStyle {
+                        background: Rectangle {
+                            radius: 4
+                            color:VetmupStyle.colorButtons;
+                            Image {
+                                id: buttonSavePlaylistImage
+                                source: {if(!buttonSavePlaylist.pressed)VetmupStyle.iconSave;
+                                    else VetmupStyle.iconSavePressed;}
+                                anchors.fill: parent;
+                            }
+                        }
+                    }
+                    ///Functions
+                    onClicked:{saveDialog.open();}
+                }
+
                 //Delete Playlist button
                 VetmupButton{
                     ///Definition and styles
                     id: buttonDeletePlaylist
-                    anchors.left: buttonOpenFolder.right;
+                    anchors.left: buttonSavePlaylist.right;
                     style: ButtonStyle {
                         background: Rectangle {
                             radius: 4
@@ -77,6 +98,36 @@ Rectangle{
                     ///Functions
                     onClicked:{myVetmupPlayer.DeletePlaylist(); }
                 }
+
+                //Shuffle Playlist button
+                VetmupButton{
+                    ///Definition and styles
+                    id: buttonShuffle
+                    checkable: true
+                    checked: false
+                    anchors.left: buttonDeletePlaylist.right;
+                    style: ButtonStyle {
+                        background: Rectangle {
+                            radius: 4
+                            color:VetmupStyle.colorButtons;
+                            Image {
+                                id: buttonShuffleImage
+                                source: {if(!buttonShuffle.checked)VetmupStyle.iconShuffle;
+                                else VetmupStyle.iconShufflePressed;}
+                                anchors.fill: parent;
+                            }
+                        }
+                    }
+                    ///Functions
+                    onCheckedChanged: {
+                        if(checked){
+                            myVetmupPlayer.ShufflePlaylist(true);
+                        }
+                        else
+                            myVetmupPlayer.ShufflePlaylist(false);
+                    }
+                }
+
 
             }
     Rectangle{
@@ -95,7 +146,7 @@ Rectangle{
                         anchors.left: parent.left
                         anchors.top: parent.top
                         anchors.right:parent.right
-                        anchors.bottom: mainRow.top
+                        anchors.bottom: middleRow.top
                         //Volume Low Image
                         Rectangle{
                             width: parent.height
@@ -258,7 +309,7 @@ Rectangle{
                         height: parent.height/10;
                         width: parent.width
                         anchors.left: parent.left
-                        anchors.top: mainRow.bottom
+                        anchors.top: middleRow.bottom
                         anchors.right:parent.right
                         anchors.bottom: parent.bottom
                         Text{

@@ -57,6 +57,14 @@ Window {
         }
     }
 
+    //Save Dialog
+    VetmupSaveDialog{
+        id:saveDialog
+        onAccepted: {
+            myVetmupPlayer.SavePlaylist(saveDialog.fileUrl)
+        }
+    }
+
     //Folder Dialog
     VetmupFolderDialog{
         id:folderDialog
