@@ -75,7 +75,7 @@ Rectangle{
                         }
                     }
                     ///Functions
-                    onClicked:{saveDialog.open();}
+                    onClicked:{if(myVetmupPlayer.HasSongs())saveDialog.open();}
                 }
 
                 //Delete Playlist button
@@ -241,6 +241,7 @@ Rectangle{
                                 Layout.minimumWidth: parent.width/2;
                                 Layout.minimumHeight: parent.height;
                                 color:VetmupStyle.colorNormal
+
                                 MouseArea{
                                     anchors.fill: parent
                                     onClicked: {

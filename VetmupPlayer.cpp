@@ -9,7 +9,8 @@
 
 /******************CONSTRUCTORS - DESTRUCTOR****************/
 VetmupPlayer::VetmupPlayer(QObject *parent):
-    QObject(parent),m_player(new QMediaPlayer(this)),m_mediaPlaylist(new QMediaPlaylist(this)),m_playerPosition (0)
+    QObject(parent),m_player(new QMediaPlayer(this)),m_mediaPlaylist(new QMediaPlaylist(this)),
+    m_playerPosition (0)
 {
     connect(m_mediaPlaylist,SIGNAL(mediaInserted(int, int)),this,SLOT(mediaInsertedSlot(int,int)));
     connect(m_mediaPlaylist,SIGNAL(mediaAboutToBeRemoved(int, int)),this,SLOT(mediaAboutToBeRemovedSlot(int,int)));
@@ -42,8 +43,6 @@ void VetmupPlayer::OpenFiles(QList<QUrl> urls)
     QList<QMediaContent> listOfContent = GetContent(urls);
     m_mediaPlaylist->addMedia(listOfContent);
 
-
-    QMediaPlayer playerForMetadata;
     foreach(QMediaContent mediaContent,listOfContent){
         QFileInfo fileInformation = QFileInfo(mediaContent.canonicalUrl().toString());
         VetmupSong song =  VetmupSong(fileInformation.baseName(),0);
@@ -156,6 +155,13 @@ void VetmupPlayer::SetVolume(double volume)
 
 void VetmupPlayer::SavePlaylist(QUrl file)
 {
+    if(HasSongs()){
+        if(m_mediaPlaylist->save(file,"m3u"))
+            qDebug()<<"File: "<<file<< " saved succesfully";
+        else
+            qDebug()<<"Error Saving File: "<<file;
+
+    }
 }
 
 void VetmupPlayer::ShufflePlaylist(bool enable)
@@ -209,7 +215,10 @@ void VetmupPlayer::ShufflePlaylist(bool enable)
      int minutes = totalSeconds%3600/60;
      int seconds = totalSeconds%3600%60;
      QTime time(hours,minutes,seconds);
-     return time.toString("mm:ss");
+     if(hours>0)
+        return time.toString("hh:mm:ss");
+     else
+         return time.toString("mm:ss");
  }
  /**********************************************************/
 
