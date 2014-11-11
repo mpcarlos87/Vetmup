@@ -259,20 +259,45 @@ Rectangle{
                                     }
                                 }
 
-                                //Main Text
-                                Text {
-                                    id: mainText
+                                Rectangle{
+                                    id: mainImageRectangle
                                     width: parent.width
-                                    height: parent.height
-                                    horizontalAlignment: Text.AlignHCenter
-                                    verticalAlignment: Text.AlignVCenter
-                                    font.family: mainFont.name;
-                                    font.pixelSize: parent.height/15;
-                                    maximumLineCount: 6
-                                    wrapMode: Text.Wrap
-                                    text: tabPlayer.mainTextString
-                                    anchors.centerIn: parent
-                                    color: VetmupStyle.colorText
+                                    height: parent.height*2/3
+                                    anchors.top: parent.top
+                                    color: "transparent"
+                                    Image{
+                                        id: mainImage
+                                        width: parent.width
+                                        height: parent.height
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        source: VetmupStyle.iconFolder
+                                        visible: true
+                                    }
+
+                                }
+
+                                Rectangle{
+                                    id: mainTextRectangle
+                                    width: parent.width
+                                    height : parent.height /3
+                                    anchors.top: mainImageRectangle.bottom
+                                    anchors.bottom: parent.botom
+                                    color: "transparent"
+                                //Main Text
+                                    Text {
+                                        id: mainText
+                                        anchors.fill: parent
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                        font.family: mainFont.name;
+                                        font.pixelSize: parent.height/5;
+                                        maximumLineCount: 4
+                                        wrapMode: Text.Wrap
+                                        text: tabPlayer.mainTextString
+                                        anchors.centerIn: parent
+                                        color: VetmupStyle.colorText
+                                    }
                                 }
                         }
 

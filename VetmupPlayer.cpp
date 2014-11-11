@@ -252,6 +252,14 @@ void VetmupPlayer::durationChangedSlot(qint64 duration)
         VetmupSong song =  VetmupSong(fileInformation.baseName(),duration);
         qDebug()<<"Playing: "<< song.GetTitle() << "\t Duration: "<< QString::number(song.GetDuration());
         QString durationString = GetTimeString(duration);
+        qDebug() << m_player->metaData(QMediaMetaData::CoverArtImage).type();
+        qDebug() << m_player->metaData(QMediaMetaData::CoverArtUrlLarge);
+        qDebug() << m_player->metaData(QMediaMetaData::CoverArtUrlSmall);
+        qDebug() << m_player->metaData(QMediaMetaData::Lyrics);
+        qDebug() << m_player->metaData(QMediaMetaData::AlbumTitle);
+        qDebug() << m_player->metaData(QMediaMetaData::AlbumArtist);
+        qDebug() << m_player->metaData("FrontCover").type();
+
         emit songChangedSignal(song.GetTitle(),song.GetDuration(),durationString,m_mediaPlaylist->currentIndex());
     }
 }
