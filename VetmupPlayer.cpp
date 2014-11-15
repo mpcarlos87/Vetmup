@@ -6,16 +6,19 @@
 #include <QMediaMetaData>
 #include <QTime>
 #include <QDir>
+#include <QImage>
+#include <QTemporaryFile>
 
 /******************CONSTRUCTORS - DESTRUCTOR****************/
 VetmupPlayer::VetmupPlayer(QObject *parent):
     QObject(parent),m_player(new QMediaPlayer(this)),m_mediaPlaylist(new QMediaPlaylist(this)),
-    m_playerPosition (0)
+    m_playerPosition (0),m_thumbnailPath(QString("")),m_thumbnail(QImage())
 {
     connect(m_mediaPlaylist,SIGNAL(mediaInserted(int, int)),this,SLOT(mediaInsertedSlot(int,int)));
     connect(m_mediaPlaylist,SIGNAL(mediaAboutToBeRemoved(int, int)),this,SLOT(mediaAboutToBeRemovedSlot(int,int)));
     connect(m_player,SIGNAL(positionChanged(qint64)),this,SLOT(positionChangedSlot(qint64)));
     connect(m_player,SIGNAL(durationChanged(qint64)),this,SLOT(durationChangedSlot(qint64)));
+    connect(m_player,SIGNAL(metaDataAvailableChanged(bool)),SLOT(metaDataAvailableChangedSlot(bool)));
     m_player->setVolume(100);
 }
 
@@ -252,15 +255,50 @@ void VetmupPlayer::durationChangedSlot(qint64 duration)
         VetmupSong song =  VetmupSong(fileInformation.baseName(),duration);
         qDebug()<<"Playing: "<< song.GetTitle() << "\t Duration: "<< QString::number(song.GetDuration());
         QString durationString = GetTimeString(duration);
+        emit songChangedSignal(song.GetTitle(),song.GetDuration(),durationString,m_mediaPlaylist->currentIndex());
+    }
+}
+
+#include <QImageWriter>
+#include <QPixmap>
+
+void VetmupPlayer::metaDataAvailableChangedSlot(bool available){
+
+    if(available){
+
+        qDebug() << m_player->availableMetaData();
         qDebug() << m_player->metaData(QMediaMetaData::CoverArtImage).type();
         qDebug() << m_player->metaData(QMediaMetaData::CoverArtUrlLarge);
         qDebug() << m_player->metaData(QMediaMetaData::CoverArtUrlSmall);
         qDebug() << m_player->metaData(QMediaMetaData::Lyrics);
         qDebug() << m_player->metaData(QMediaMetaData::AlbumTitle);
         qDebug() << m_player->metaData(QMediaMetaData::AlbumArtist);
-        qDebug() << m_player->metaData("FrontCover").type();
+        qDebug() << m_player->metaData(QMediaMetaData::Title);
+        QVariant imageVariant = m_player->metaData(QMediaMetaData::ThumbnailImage);
 
-        emit songChangedSignal(song.GetTitle(),song.GetDuration(),durationString,m_mediaPlaylist->currentIndex());
+        if(imageVariant.type() == QMetaType::QImage){
+                QImage image = imageVariant.value<QImage>();
+                if(m_thumbnail == image)
+                    return;
+                if(image.isNull()){
+                    qDebug() << "Imagen NULL!";
+                }
+                m_thumbnail = QImage(image);
+
+                if(QFile::exists(m_thumbnailPath))
+                    QFile::remove(m_thumbnailPath);
+
+                QTemporaryFile thumbnailFile;
+                if(thumbnailFile.open())
+                {
+                    m_thumbnailPath = thumbnailFile.fileName().append(".png");
+                    QImageWriter writer(m_thumbnailPath);
+                    if(writer.write(m_thumbnail))
+                    {
+                        emit songMetaDataChangedSignal(m_thumbnailPath);
+                    }
+                }
+       }
     }
 }
 

@@ -14,6 +14,7 @@
 #include <QMediaPlayer>
 #include <QList>
 #include <QMediaContent>
+#include <QImage>
 #include "VetmupSong.h"
 
 class VetmupPlayer : public QObject
@@ -106,6 +107,8 @@ private:
        QMediaPlayer* m_player;
        QMediaPlaylist* m_mediaPlaylist;
        qint64 m_playerPosition;
+       QString m_thumbnailPath;
+       QImage m_thumbnail;
 
        //! This method does a recursive searching for songs into a folder
        /*!
@@ -133,6 +136,7 @@ private slots:
        void	mediaAboutToBeRemovedSlot(int, int);
        void positionChangedSlot(qint64 position);
        void durationChangedSlot(qint64 duration);
+       void metaDataAvailableChangedSlot(bool);
 
 signals:
 
@@ -141,6 +145,7 @@ signals:
        void songAddedSignal(QString title);
        void deletePlaylistSignal();
        void deleteSongSignal(int index);
+       void songMetaDataChangedSignal(QString sourceUrl);
 };
 
 Q_DECLARE_METATYPE(VetmupPlayer)

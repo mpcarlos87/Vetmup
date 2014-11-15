@@ -26,6 +26,10 @@ Window {
             tabPlaylist.listSongsCurrentIndex = index;
             tabPlayer.textTimeSliderTotal = durationText;
         }
+        onSongMetaDataChangedSignal:{
+            tabPlayer.songImageSource = "file:///" + sourceUrl;
+        }
+
         onSliderPositionChangedSignal:{
             if(!tabPlayer.children[0].children[1].children[2].children[1].pressed){
                 tabPlayer.timeSliderValue = position;
@@ -107,6 +111,7 @@ Window {
             property string mainTextString: VetmupStyle.textDefaultPlayer
             property string textTimeSliderTotal:VetmupStyle.textDefaultTimeSlider
             property string textTimeSliderCurrent:VetmupStyle.textDefaultTimeSlider
+            property string songImageSource:"";
         }
 
         Tab {

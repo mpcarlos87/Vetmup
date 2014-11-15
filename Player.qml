@@ -271,7 +271,7 @@ Rectangle{
                                         height: parent.height
                                         anchors.horizontalCenter: parent.horizontalCenter
                                         anchors.verticalCenter: parent.verticalCenter
-                                        source: VetmupStyle.iconFolder
+                                        source: songImageSource
                                         visible: true
                                     }
 
