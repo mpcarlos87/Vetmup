@@ -27,7 +27,10 @@ Window {
             tabPlayer.textTimeSliderTotal = durationText;
         }
         onSongMetaDataChangedSignal:{
-            tabPlayer.songImageSource = "file:///" + sourceUrl;
+            if(sourceUrl== "")
+                tabPlayer.songImageSource = VetmupStyle.defaultSongImage;
+            else
+                tabPlayer.songImageSource = sourceUrl;
         }
 
         onSliderPositionChangedSignal:{
@@ -36,9 +39,11 @@ Window {
                 tabPlayer.textTimeSliderCurrent = positionText;
             }
         }
+
         onSongAddedSignal:{
             tabPlaylist.listModelSongs.append({"title": title})
         }
+
         onDeletePlaylistSignal:{
             tabPlayer.mainTextString = VetmupStyle.textDefaultPlayer
             tabPlaylist.listModelSongs.remove(0,tabPlaylist.listModelSongs.count);
@@ -111,7 +116,7 @@ Window {
             property string mainTextString: VetmupStyle.textDefaultPlayer
             property string textTimeSliderTotal:VetmupStyle.textDefaultTimeSlider
             property string textTimeSliderCurrent:VetmupStyle.textDefaultTimeSlider
-            property string songImageSource:"";
+            property string songImageSource:VetmupStyle.defaultSongImage;
         }
 
         Tab {

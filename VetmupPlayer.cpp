@@ -266,6 +266,8 @@ void VetmupPlayer::metaDataAvailableChangedSlot(bool available){
 
     if(available){
 
+        //Process the meta data
+
         qDebug() << m_player->availableMetaData();
         qDebug() << m_player->metaData(QMediaMetaData::CoverArtImage).type();
         qDebug() << m_player->metaData(QMediaMetaData::CoverArtUrlLarge);
@@ -278,27 +280,32 @@ void VetmupPlayer::metaDataAvailableChangedSlot(bool available){
 
         if(imageVariant.type() == QMetaType::QImage){
                 QImage image = imageVariant.value<QImage>();
-                if(m_thumbnail == image)
-                    return;
-                if(image.isNull()){
-                    qDebug() << "Imagen NULL!";
-                }
-                m_thumbnail = QImage(image);
-
-                if(QFile::exists(m_thumbnailPath))
-                    QFile::remove(m_thumbnailPath);
-
-                QTemporaryFile thumbnailFile;
-                if(thumbnailFile.open())
+                if(!image.isNull() && m_thumbnail != image)
                 {
-                    m_thumbnailPath = thumbnailFile.fileName().append(".png");
-                    QImageWriter writer(m_thumbnailPath);
-                    if(writer.write(m_thumbnail))
+                    m_thumbnail = QImage(image);
+
+                    if(QFile::exists(m_thumbnailPath))
+                        QFile::remove(m_thumbnailPath);
+                    QTemporaryFile thumbnailFile;
+                    if(thumbnailFile.open())
                     {
-                        emit songMetaDataChangedSignal(m_thumbnailPath);
+                        m_thumbnailPath = thumbnailFile.fileName().append(".png");
+                        QImageWriter writer(m_thumbnailPath);
+                        if(writer.write(m_thumbnail))
+                        {
+                            emit songMetaDataChangedSignal("file:///" +m_thumbnailPath);
+                        }
+                    }
+                    else{
+                        m_thumbnail = QImage();
+                        emit songMetaDataChangedSignal("");
                     }
                 }
-       }
+        }
+        else{
+            m_thumbnail = QImage();
+            emit songMetaDataChangedSignal("");
+        }
     }
 }
 

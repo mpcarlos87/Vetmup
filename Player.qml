@@ -131,17 +131,16 @@ Rectangle{
 
             }
     Rectangle{
-
                 id: tabPlayerMainWindow
                 height: parent.height*7/8
                 width: parent.width
+                anchors.top: tabPlayerTopBar.bottom
                 anchors.bottom: parent.bottom
                 color:VetmupStyle.colorNormal
-
                 //Top Row of the MainWindow of the Player
                 RowLayout {
                         id: topRow
-                        height: parent.height/10;
+                        height: parent.height/8;
                         width: parent.width
                         anchors.left: parent.left
                         anchors.top: parent.top
@@ -160,7 +159,7 @@ Rectangle{
                                 fillMode: Image.Stretch
                                 sourceSize.height: parent.height
                                 sourceSize.width: parent.width
-                                source:"qrc:///Icons/VolumeLowWhite"
+                                source:VetmupStyle.iconVolumeLow
                             }
                         }
                         //Volume Slider
@@ -194,18 +193,18 @@ Rectangle{
                                 fillMode: Image.Stretch
                                 sourceSize.height: parent.height
                                 sourceSize.width: parent.width
-                                source:"qrc:///Icons/VolumeHighWhite"
+                                source:VetmupStyle.iconVolumeHigh
                             }
                         }
                 }
 
                 RowLayout {
                         id: middleRow
-                        height: parent.height*8/10;
+                        height: parent.height*6/8;
                         width: parent.width
                         anchors.left: parent.left
                         anchors.right:parent.right
-                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.top: topRow.bottom
                         spacing: 5
 
                         //Region to previous song
@@ -267,10 +266,7 @@ Rectangle{
                                     color: "transparent"
                                     Image{
                                         id: mainImage
-                                        width: parent.width
-                                        height: parent.height
-                                        anchors.horizontalCenter: parent.horizontalCenter
-                                        anchors.verticalCenter: parent.verticalCenter
+                                        anchors.fill: parent
                                         source: songImageSource
                                         visible: true
                                     }
@@ -329,10 +325,9 @@ Rectangle{
                         }
                 }
 
-
                 RowLayout {
                         id: bottomRow
-                        height: parent.height/10;
+                        height: parent.height/8;
                         width: parent.width
                         anchors.left: parent.left
                         anchors.top: middleRow.bottom
@@ -343,7 +338,7 @@ Rectangle{
                             anchors.right: timeSlider.left
                             anchors.rightMargin: 10
                             font.family: mainFont.name;
-                            font.pixelSize: parent.height/2;
+                            font.pixelSize: parent.height/4;
                             color: VetmupStyle.colorText
                             text: tabPlayer.textTimeSliderCurrent
                         }
@@ -369,11 +364,10 @@ Rectangle{
                             anchors.left: timeSlider.right
                             anchors.leftMargin: 10
                             font.family: mainFont.name;
-                            font.pixelSize: parent.height/2;
+                            font.pixelSize: parent.height/4;
                             color: VetmupStyle.colorText
                             text: tabPlayer.textTimeSliderTotal
                         }
                 }
             }
-
 }
