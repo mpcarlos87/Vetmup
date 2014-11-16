@@ -35,6 +35,6 @@
         <file alias="Quickhand">Resources/Text/Quikhand.ttf</file>
     </qresource>
     <qresource prefix="/Images">
-        <file alias="DefaultSongImage">Resources/Images/Images/DefaultSongImage.jpg</file>
+        <file alias="DefaultSongImage">Resources/Images/Images/DefaultSongImage.png</file>
     </qresource>
 </RCC>
