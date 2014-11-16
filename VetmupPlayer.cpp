@@ -8,6 +8,7 @@
 #include <QDir>
 #include <QImage>
 #include <QTemporaryFile>
+#include <QImageWriter>
 
 /******************CONSTRUCTORS - DESTRUCTOR****************/
 VetmupPlayer::VetmupPlayer(QObject *parent):
@@ -243,7 +244,6 @@ void VetmupPlayer::mediaAboutToBeRemovedSlot(int start, int end)
 }
 
 void VetmupPlayer::positionChangedSlot(qint64 position){
-    qDebug()<<"void VetmupPlayer::positionChangedSlot(qint64 position)"<<position;
     QString timeString = GetTimeString(position);
     emit sliderPositionChangedSignal(position,timeString);
 }
@@ -259,15 +259,12 @@ void VetmupPlayer::durationChangedSlot(qint64 duration)
     }
 }
 
-#include <QImageWriter>
-#include <QPixmap>
+
 
 void VetmupPlayer::metaDataAvailableChangedSlot(bool available){
-
     if(available){
 
-        //Process the meta data
-
+        qDebug()<< "VetmupPlayer::metaDataAvailableChangedSlot(bool available)";
         qDebug() << m_player->availableMetaData();
         qDebug() << m_player->metaData(QMediaMetaData::CoverArtImage).type();
         qDebug() << m_player->metaData(QMediaMetaData::CoverArtUrlLarge);
@@ -278,7 +275,7 @@ void VetmupPlayer::metaDataAvailableChangedSlot(bool available){
         qDebug() << m_player->metaData(QMediaMetaData::Title);
         QVariant imageVariant = m_player->metaData(QMediaMetaData::ThumbnailImage);
 
-        if(imageVariant.type() == QMetaType::QImage){
+        if(imageVariant.type() == QVariant::Type::Image){
                 QImage image = imageVariant.value<QImage>();
                 if(!image.isNull() && m_thumbnail != image)
                 {
@@ -290,6 +287,7 @@ void VetmupPlayer::metaDataAvailableChangedSlot(bool available){
                     if(thumbnailFile.open())
                     {
                         m_thumbnailPath = thumbnailFile.fileName().append(".png");
+                        qDebug()<< "Path: "<< m_thumbnailPath;
                         QImageWriter writer(m_thumbnailPath);
                         if(writer.write(m_thumbnail))
                         {
@@ -306,6 +304,7 @@ void VetmupPlayer::metaDataAvailableChangedSlot(bool available){
             m_thumbnail = QImage();
             emit songMetaDataChangedSignal("");
         }
+
     }
 }
 
