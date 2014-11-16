@@ -138,14 +138,14 @@ Rectangle{
                 anchors.bottom: parent.bottom
                 color:VetmupStyle.colorNormal
                 //Top Row of the MainWindow of the Player
-                RowLayout {
+                Rectangle {
                         id: topRow
                         height: parent.height/8;
                         width: parent.width
                         anchors.left: parent.left
                         anchors.top: parent.top
                         anchors.right:parent.right
-                        anchors.bottom: middleRow.top
+                        color:VetmupStyle.colorNormal
                         //Volume Low Image
                         Rectangle{
                             width: parent.height
@@ -166,8 +166,7 @@ Rectangle{
                         Slider {
                             id: volumeSlider
                             height: parent.height
-                            Layout.minimumWidth: parent.width/2;
-                            Layout.minimumHeight: parent.height;
+                            width: parent.width/2.5
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.horizontalCenter: parent.horizontalCenter
                             maximumValue: 100.0;
@@ -198,21 +197,21 @@ Rectangle{
                         }
                 }
 
-                RowLayout {
+                Rectangle {
                         id: middleRow
                         height: parent.height*6/8;
                         width: parent.width
                         anchors.left: parent.left
                         anchors.right:parent.right
                         anchors.top: topRow.bottom
-                        spacing: 5
+                        color:VetmupStyle.colorNormal
 
                         //Region to previous song
                         Rectangle{
                                 id: previousSongWindow
-                                Layout.fillWidth: true;
-                                Layout.minimumWidth: parent.width/4;
-                                Layout.minimumHeight: parent.height;
+                                width: parent.width/6
+                                height: parent.height
+                                anchors.left: parent.left
                                 color: VetmupStyle.colorNormal;
                                 Image{
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -236,9 +235,9 @@ Rectangle{
                         //Region to play/pause
                         Rectangle{
                                 id: playPauseWindow
-                                Layout.fillWidth: true;
-                                Layout.minimumWidth: parent.width/2;
-                                Layout.minimumHeight: parent.height;
+                                height:parent.height
+                                width: parent.width*4/6
+                                anchors.horizontalCenter: parent.horizontalCenter
                                 color:VetmupStyle.colorNormal
 
                                 MouseArea{
@@ -300,9 +299,9 @@ Rectangle{
                         //Region to next song
                         Rectangle{
                                id: nextSongWindow
-                               Layout.fillWidth: true
-                               Layout.minimumWidth: parent.width/4;
-                               Layout.minimumHeight: parent.height;
+                               height: parent.height
+                               width: parent.width/6;
+                               anchors.right: parent.right
                                color:VetmupStyle.colorNormal
 
                                Image{
@@ -325,7 +324,7 @@ Rectangle{
                         }
                 }
 
-                RowLayout {
+                Rectangle {
                         id: bottomRow
                         height: parent.height/8;
                         width: parent.width
@@ -333,20 +332,20 @@ Rectangle{
                         anchors.top: middleRow.bottom
                         anchors.right:parent.right
                         anchors.bottom: parent.bottom
+                        color:VetmupStyle.colorNormal
                         Text{
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.right: timeSlider.left
                             anchors.rightMargin: 10
                             font.family: mainFont.name;
-                            font.pixelSize: parent.height/4;
+                            font.pixelSize: parent.height/3;
                             color: VetmupStyle.colorText
                             text: tabPlayer.textTimeSliderCurrent
                         }
                         Slider {
                             id: timeSlider
                             height: parent.height
-                            Layout.minimumWidth: parent.width/1.8;
-                            Layout.minimumHeight: parent.height;
+                            width: parent.width/1.8;
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.horizontalCenter: parent.horizontalCenter
                             value:tabPlayer.timeSliderValue
@@ -364,7 +363,7 @@ Rectangle{
                             anchors.left: timeSlider.right
                             anchors.leftMargin: 10
                             font.family: mainFont.name;
-                            font.pixelSize: parent.height/4;
+                            font.pixelSize: parent.height/3;
                             color: VetmupStyle.colorText
                             text: tabPlayer.textTimeSliderTotal
                         }
