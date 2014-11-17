@@ -9,7 +9,7 @@ import vetmup.style 1.0
 Window {
     id:main
     visible: true
-    width: 1280
+    width: 480
     height: 720
 
     //Load font

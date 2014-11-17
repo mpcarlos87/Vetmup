@@ -19,7 +19,7 @@ Rectangle{
                 VetmupButton{
                     ///Definition and styles
                     id: buttonOpenFiles
-                    anchors.right: buttonOpenFolder.left;
+                    anchors.right: buttonOpenFolder.left
                     style: ButtonStyle {
                             background: Rectangle {
                                 radius: 4
@@ -61,7 +61,7 @@ Rectangle{
                 VetmupButton{
                     ///Definition and styles
                     id: buttonSavePlaylist
-                    anchors.horizontalCenter: parent.horizontalCenter;
+                    anchors.horizontalCenter: parent.horizontalCenter
                     style: ButtonStyle {
                         background: Rectangle {
                             radius: 4
@@ -82,7 +82,7 @@ Rectangle{
                 VetmupButton{
                     ///Definition and styles
                     id: buttonDeletePlaylist
-                    anchors.left: buttonSavePlaylist.right;
+                    anchors.left: buttonSavePlaylist.right
                     style: ButtonStyle {
                         background: Rectangle {
                             radius: 4
@@ -103,9 +103,9 @@ Rectangle{
                 VetmupButton{
                     ///Definition and styles
                     id: buttonShuffle
+                    anchors.left: buttonDeletePlaylist.right
                     checkable: true
                     checked: false
-                    anchors.left: buttonDeletePlaylist.right;
                     style: ButtonStyle {
                         background: Rectangle {
                             radius: 4
@@ -127,8 +127,6 @@ Rectangle{
                             myVetmupPlayer.ShufflePlaylist(false);
                     }
                 }
-
-
             }
     Rectangle{
                 id: tabPlayerMainWindow
@@ -148,8 +146,8 @@ Rectangle{
                         color:VetmupStyle.colorNormal
                         //Volume Low Image
                         Rectangle{
-                            width: parent.height
-                            height: parent.height
+                            width: parent.height/1.5
+                            height: parent.height/1.5
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.right: volumeSlider.left
                             anchors.rightMargin: 10
@@ -181,8 +179,8 @@ Rectangle{
                         }
                         //Volume High Image
                         Rectangle{
-                            width: parent.height
-                            height: parent.height
+                            width: parent.height/1.5
+                            height: parent.height/1.5
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: volumeSlider.right
                             anchors.leftMargin: 10

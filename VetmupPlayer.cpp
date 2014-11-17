@@ -19,7 +19,7 @@ VetmupPlayer::VetmupPlayer(QObject *parent):
     connect(m_mediaPlaylist,SIGNAL(mediaAboutToBeRemoved(int, int)),this,SLOT(mediaAboutToBeRemovedSlot(int,int)));
     connect(m_player,SIGNAL(positionChanged(qint64)),this,SLOT(positionChangedSlot(qint64)));
     connect(m_player,SIGNAL(durationChanged(qint64)),this,SLOT(durationChangedSlot(qint64)));
-    connect(m_player,SIGNAL(metaDataAvailableChanged(bool)),SLOT(metaDataAvailableChangedSlot(bool)));
+    connect(m_player,SIGNAL(metaDataChanged()),SLOT(metaDataChangedSlot()));
     m_player->setVolume(100);
 }
 
@@ -187,7 +187,8 @@ void VetmupPlayer::ShufflePlaylist(bool enable)
      QFileInfoList audioFiles = directory.entryInfoList(nameFilter, QDir::AllEntries | QDir::NoDotAndDotDot |QDir::NoSymLinks);
 
      foreach(QFileInfo audioFile,audioFiles){
-         if(audioFile.isFile() && audioFile.suffix()=="mp3"){
+
+         if(audioFile.isFile() && (audioFile.suffix()=="mp3" || audioFile.suffix() =="wma" || audioFile.suffix() == "m4a")){
              QString path = audioFile.absoluteFilePath();
              //If we are in android, add file:// to the path
              //It is necessary to the QMediaContent :/
@@ -208,9 +209,28 @@ void VetmupPlayer::ShufflePlaylist(bool enable)
      QList<QMediaContent> listOfMedia = QList<QMediaContent>();
      foreach(QUrl path,listOfSongs)
      {
-         listOfMedia.append(QMediaContent(path));
+         QFileInfo fileInfo(path.toLocalFile());
+         qDebug()<<fileInfo.suffix();
+         //Open Playlist m3u
+         if(fileInfo.suffix() == "m3u")
+         {
+             QList<QMediaContent> playList = OpenPlayList(path);
+             listOfMedia.append(playList);
+         }
+         else
+            listOfMedia.append(QMediaContent(path));
      }
      return listOfMedia;
+ }
+
+ QList<QMediaContent> VetmupPlayer::OpenPlayList(QUrl path)
+ {
+     QList<QMediaContent> list = QList<QMediaContent>();
+     QMediaPlaylist playList(this);
+     playList.load(path,"m3u");
+     for(int i = 0 ; i < playList.mediaCount(); i++)
+        list.append(playList.media(i));
+    return list;
  }
 
  QString VetmupPlayer::GetTimeString(int mseconds){
@@ -253,7 +273,6 @@ void VetmupPlayer::durationChangedSlot(qint64 duration)
     if(duration >0){
         QFileInfo fileInformation = QFileInfo(m_mediaPlaylist->currentMedia().canonicalUrl().toString());
         VetmupSong song =  VetmupSong(fileInformation.baseName(),duration);
-        qDebug()<<"Playing: "<< song.GetTitle() << "\t Duration: "<< QString::number(song.GetDuration());
         QString durationString = GetTimeString(duration);
         emit songChangedSignal(song.GetTitle(),song.GetDuration(),durationString,m_mediaPlaylist->currentIndex());
     }
@@ -261,18 +280,10 @@ void VetmupPlayer::durationChangedSlot(qint64 duration)
 
 
 
-void VetmupPlayer::metaDataAvailableChangedSlot(bool available){
-    if(available){
+void VetmupPlayer::metaDataChangedSlot()
+{
+    if(m_player->isMetaDataAvailable()){
 
-        qDebug()<< "VetmupPlayer::metaDataAvailableChangedSlot(bool available)";
-        qDebug() << m_player->availableMetaData();
-        qDebug() << m_player->metaData(QMediaMetaData::CoverArtImage).type();
-        qDebug() << m_player->metaData(QMediaMetaData::CoverArtUrlLarge);
-        qDebug() << m_player->metaData(QMediaMetaData::CoverArtUrlSmall);
-        qDebug() << m_player->metaData(QMediaMetaData::Lyrics);
-        qDebug() << m_player->metaData(QMediaMetaData::AlbumTitle);
-        qDebug() << m_player->metaData(QMediaMetaData::AlbumArtist);
-        qDebug() << m_player->metaData(QMediaMetaData::Title);
         QVariant imageVariant = m_player->metaData(QMediaMetaData::ThumbnailImage);
 
         if(imageVariant.type() == QVariant::Type::Image){
@@ -287,7 +298,6 @@ void VetmupPlayer::metaDataAvailableChangedSlot(bool available){
                     if(thumbnailFile.open())
                     {
                         m_thumbnailPath = thumbnailFile.fileName().append(".png");
-                        qDebug()<< "Path: "<< m_thumbnailPath;
                         QImageWriter writer(m_thumbnailPath);
                         if(writer.write(m_thumbnail))
                         {
@@ -304,10 +314,8 @@ void VetmupPlayer::metaDataAvailableChangedSlot(bool available){
             m_thumbnail = QImage();
             emit songMetaDataChangedSignal("");
         }
-
     }
 }
-
 /**********************************************************/
 
 
