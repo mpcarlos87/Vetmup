@@ -217,7 +217,7 @@ Rectangle{
                                     width: parent.width/2;
                                     height: parent.width/2;
                                     source:  {if(!previousSongMouse.pressed)VetmupStyle.iconPrevious;
-                                        else VetmupStyle.iconPreviousPressed;}
+                                            else VetmupStyle.iconPreviousPressed;}
                                 }
 
                                 MouseArea{
