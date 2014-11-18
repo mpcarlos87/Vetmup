@@ -17,6 +17,15 @@ Rectangle{
                 width: listSongsRectangle.width;
                 height: listSongsRectangle.height/10;
                 color: "transparent"
+                property int indexClicked: -1;
+                property int x_movement;
+
+                onXChanged: {
+                        if (mouseArea.drag.active) {
+                            x_movement=x;
+                        }
+                }
+
                 Label {
                     width: parent.width
                     height: parent.height
@@ -31,13 +40,30 @@ Rectangle{
                     color: songComponentRectangle.ListView.isCurrentItem ? VetmupStyle.colorTextSelected : VetmupStyle.colorText;
                 }
                 MouseArea{
+                    id:mouseArea
                     anchors.fill: parent;
+                    drag.target: songComponentRectangle
+                    drag.axis: Drag.XAxis
+                    drag.minimumX: 0
+                    drag.maximumX: songComponentRectangle.width
+
                     onClicked: {
                         myVetmupPlayer.PlaySong(index);
                     }
-                    onPressAndHold:
+                    onPressed: {
+                        x_movement = 0;
+                        indexClicked = index;
+                    }
+                    onPositionChanged:
                     {
-                        myVetmupPlayer.DeleteSong(index);
+                        if(x_movement > songComponentRectangle.width/2)
+                            myVetmupPlayer.DeleteSong(indexClicked);
+                    }
+
+                    onReleased:
+                    {
+                        if(x_movement!=0)
+                            parent.x += x_movement *(-1);
                     }
                 }
             }

@@ -54,7 +54,7 @@ Window {
             if(!myVetmupPlayer.HasSongs()){
                 tabPlayer.mainTextString = VetmupStyle.textDefaultPlayer
             }
-            listModelSongs.remove(index);
+            tabPlaylist.listModelSongs.remove(index);
         }
     }
 

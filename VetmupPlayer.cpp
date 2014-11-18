@@ -17,6 +17,7 @@ VetmupPlayer::VetmupPlayer(QObject *parent):
 {
     connect(m_mediaPlaylist,SIGNAL(mediaInserted(int, int)),this,SLOT(mediaInsertedSlot(int,int)));
     connect(m_mediaPlaylist,SIGNAL(mediaAboutToBeRemoved(int, int)),this,SLOT(mediaAboutToBeRemovedSlot(int,int)));
+    connect(m_mediaPlaylist,SIGNAL(mediaRemoved(int,int)),this,SLOT(mediaRemovedSlot(int,int)));
     connect(m_player,SIGNAL(positionChanged(qint64)),this,SLOT(positionChangedSlot(qint64)));
     connect(m_player,SIGNAL(durationChanged(qint64)),this,SLOT(durationChangedSlot(qint64)));
     connect(m_player,SIGNAL(metaDataChanged()),SLOT(metaDataChangedSlot()));
@@ -129,9 +130,24 @@ void VetmupPlayer::PlaySong(int index)
 
 void VetmupPlayer::DeleteSong(int index)
 {
+
     if(m_mediaPlaylist->currentIndex() != index)
     {
-        m_mediaPlaylist->removeMedia(index);
+        int currentIndex = m_mediaPlaylist->currentIndex();
+
+        if(index < currentIndex)
+        {
+            qint64 position = m_player->position();
+            m_player->pause();
+            m_mediaPlaylist->removeMedia(index);
+            m_mediaPlaylist->setCurrentIndex(currentIndex-1);
+            m_player->play();
+            m_player->setPosition(position);
+        }
+        else
+        {
+            m_mediaPlaylist->removeMedia(index);
+        }
         emit deleteSongSignal(index);
     }
 }
@@ -259,8 +275,10 @@ void VetmupPlayer::ShufflePlaylist(bool enable)
 
 void VetmupPlayer::mediaAboutToBeRemovedSlot(int start, int end)
 {
-    for(int i = start; i <= end;i++)
-        qDebug()<<"Deleted: "<<m_mediaPlaylist->media(i).canonicalUrl();
+}
+
+void VetmupPlayer::mediaRemovedSlot(int start, int end)
+{
 }
 
 void VetmupPlayer::positionChangedSlot(qint64 position){

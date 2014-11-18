@@ -137,6 +137,7 @@ private:
 private slots:
        void mediaInsertedSlot(int,int);
        void	mediaAboutToBeRemovedSlot(int, int);
+       void	mediaRemovedSlot(int, int);
        void positionChangedSlot(qint64 position);
        void durationChangedSlot(qint64 duration);
        void metaDataChangedSlot();
