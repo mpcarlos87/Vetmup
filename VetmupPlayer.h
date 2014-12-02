@@ -106,7 +106,7 @@ class VetmupPlayer : public QObject
 private:
        QMediaPlayer* m_player;
        QMediaPlaylist* m_mediaPlaylist;
-       qint64 m_playerPosition;
+       qint64 m_playerPosition, m_previousPosition;
        QString m_thumbnailPath;
        QImage m_thumbnail;
 
@@ -136,11 +136,10 @@ private:
 
 private slots:
        void mediaInsertedSlot(int,int);
-       void	mediaAboutToBeRemovedSlot(int, int);
-       void	mediaRemovedSlot(int, int);
        void positionChangedSlot(qint64 position);
        void durationChangedSlot(qint64 duration);
        void metaDataChangedSlot();
+       void seekableChangedSlot(bool);
 
 signals:
 

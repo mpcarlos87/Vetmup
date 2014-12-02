@@ -13,14 +13,13 @@
 /******************CONSTRUCTORS - DESTRUCTOR****************/
 VetmupPlayer::VetmupPlayer(QObject *parent):
     QObject(parent),m_player(new QMediaPlayer(this)),m_mediaPlaylist(new QMediaPlaylist(this)),
-    m_playerPosition (0),m_thumbnailPath(QString("")),m_thumbnail(QImage())
+    m_playerPosition (0),m_thumbnailPath(QString("")),m_thumbnail(QImage()), m_previousPosition(0)
 {
     connect(m_mediaPlaylist,SIGNAL(mediaInserted(int, int)),this,SLOT(mediaInsertedSlot(int,int)));
-    connect(m_mediaPlaylist,SIGNAL(mediaAboutToBeRemoved(int, int)),this,SLOT(mediaAboutToBeRemovedSlot(int,int)));
-    connect(m_mediaPlaylist,SIGNAL(mediaRemoved(int,int)),this,SLOT(mediaRemovedSlot(int,int)));
     connect(m_player,SIGNAL(positionChanged(qint64)),this,SLOT(positionChangedSlot(qint64)));
     connect(m_player,SIGNAL(durationChanged(qint64)),this,SLOT(durationChangedSlot(qint64)));
     connect(m_player,SIGNAL(metaDataChanged()),SLOT(metaDataChangedSlot()));
+    connect(m_player, SIGNAL(seekableChanged(bool)),this,SLOT(seekableChangedSlot(bool)));
     m_player->setVolume(100);
 }
 
@@ -133,21 +132,29 @@ void VetmupPlayer::DeleteSong(int index)
 
     if(m_mediaPlaylist->currentIndex() != index)
     {
+        QMediaPlayer::State originalState = m_player->state();
         int currentIndex = m_mediaPlaylist->currentIndex();
+        qint64 position = m_player->position();
 
         if(index < currentIndex)
         {
-            qint64 position = m_player->position();
+            m_previousPosition = position;
             m_player->pause();
             m_mediaPlaylist->removeMedia(index);
             m_mediaPlaylist->setCurrentIndex(currentIndex-1);
-            m_player->play();
-            m_player->setPosition(position);
         }
         else
         {
             m_mediaPlaylist->removeMedia(index);
         }
+
+        switch(originalState){
+           case QMediaPlayer::PlayingState:
+                m_player->play();
+                m_player->setPosition(position);
+                break;
+        }
+
         emit deleteSongSignal(index);
     }
 }
@@ -273,15 +280,8 @@ void VetmupPlayer::ShufflePlaylist(bool enable)
     }
 }
 
-void VetmupPlayer::mediaAboutToBeRemovedSlot(int start, int end)
-{
-}
-
-void VetmupPlayer::mediaRemovedSlot(int start, int end)
-{
-}
-
 void VetmupPlayer::positionChangedSlot(qint64 position){
+    qDebug()<<"positionChangedSlot: "<<position;
     QString timeString = GetTimeString(position);
     emit sliderPositionChangedSignal(position,timeString);
 }
@@ -334,6 +334,18 @@ void VetmupPlayer::metaDataChangedSlot()
         }
     }
 }
+
+void VetmupPlayer::seekableChangedSlot(bool seekable)
+{
+    if(seekable){
+        if(m_previousPosition>0){
+            qint64 newPosition = m_previousPosition;
+            m_player->setPosition(newPosition);
+            m_previousPosition = 0;
+        }
+    }
+}
+
 /**********************************************************/
 
 
