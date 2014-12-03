@@ -129,32 +129,37 @@ void VetmupPlayer::PlaySong(int index)
 
 void VetmupPlayer::DeleteSong(int index)
 {
-
+    //Only deletes the songs different at the current played/paused
     if(m_mediaPlaylist->currentIndex() != index)
     {
         QMediaPlayer::State originalState = m_player->state();
         int currentIndex = m_mediaPlaylist->currentIndex();
         qint64 position = m_player->position();
 
+        //If the song deleted is before
         if(index < currentIndex)
         {
+            //Save the position of the player to set it when seekableChanged is thrown
             m_previousPosition = position;
             m_player->pause();
             m_mediaPlaylist->removeMedia(index);
+            //Set the song to the currentIndex-1 because the song deleted was before
             m_mediaPlaylist->setCurrentIndex(currentIndex-1);
         }
+        //Else the song deleted is after
         else
         {
             m_mediaPlaylist->removeMedia(index);
         }
 
+        //Set the original state again
         switch(originalState){
            case QMediaPlayer::PlayingState:
                 m_player->play();
-                m_player->setPosition(position);
                 break;
         }
 
+        //Emit delete song to update the UI in QML
         emit deleteSongSignal(index);
     }
 }
@@ -283,6 +288,7 @@ void VetmupPlayer::ShufflePlaylist(bool enable)
 void VetmupPlayer::positionChangedSlot(qint64 position){
     qDebug()<<"positionChangedSlot: "<<position;
     QString timeString = GetTimeString(position);
+    //Notify the UI to set the slider position
     emit sliderPositionChangedSignal(position,timeString);
 }
 
@@ -339,8 +345,8 @@ void VetmupPlayer::seekableChangedSlot(bool seekable)
 {
     if(seekable){
         if(m_previousPosition>0){
-            qint64 newPosition = m_previousPosition;
-            m_player->setPosition(newPosition);
+            qDebug()<<"Set position in seekable: " << m_previousPosition;
+            m_player->setPosition(m_previousPosition);
             m_previousPosition = 0;
         }
     }
