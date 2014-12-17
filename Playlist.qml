@@ -56,8 +56,14 @@ Rectangle{
                     }
                     onPositionChanged:
                     {
-                        if(x_movement > songComponentRectangle.width/2)
+                        if(x_movement > songComponentRectangle.width/2 && indexClicked != -1)
+                        {
+                            console.log("Delete: "+indexClicked);
                             myVetmupPlayer.DeleteSong(indexClicked);
+                            x_movement = 0;
+                            indexClicked = -1;
+                        }
+
                     }
 
                     onReleased:

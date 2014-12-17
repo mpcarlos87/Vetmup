@@ -105,10 +105,12 @@ class VetmupPlayer : public QObject
         Q_INVOKABLE void ShufflePlaylist(bool enable);
 private:
        QMediaPlayer* m_player;
-       QMediaPlaylist* m_mediaPlaylist;
-       qint64 m_playerPosition, m_previousPosition;
+       QList<QMediaContent>* m_mediaPlaylist;
+       int m_index;
+       qint64 m_playerPosition;
        QString m_thumbnailPath;
        QImage m_thumbnail;
+       bool m_random;
 
        //! This method does a recursive searching for songs into a folder
        /*!
@@ -134,12 +136,18 @@ private:
 
        QList<QMediaContent> OpenPlayList(QUrl path);
 
+       void RestorePreviousState(QMediaPlayer::State previousState);
+
+       int RandInt(int low, int high);
+
+       int GetNextIndex();
+       int GetPreviousIndex();
+
 private slots:
-       void mediaInsertedSlot(int,int);
        void positionChangedSlot(qint64 position);
        void durationChangedSlot(qint64 duration);
        void metaDataChangedSlot();
-       void seekableChangedSlot(bool);
+       void mediaStatusChangedSlot(QMediaPlayer::MediaStatus);
 
 signals:
 

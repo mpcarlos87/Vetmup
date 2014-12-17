@@ -12,14 +12,16 @@
 
 /******************CONSTRUCTORS - DESTRUCTOR****************/
 VetmupPlayer::VetmupPlayer(QObject *parent):
-    QObject(parent),m_player(new QMediaPlayer(this)),m_mediaPlaylist(new QMediaPlaylist(this)),
-    m_playerPosition (0),m_thumbnailPath(QString("")),m_thumbnail(QImage()), m_previousPosition(0)
+    QObject(parent),m_player(new QMediaPlayer(this)),m_mediaPlaylist(new QList<QMediaContent>()),
+    m_playerPosition (0),m_thumbnailPath(QString("")),m_thumbnail(QImage()),m_random(false)
 {
-    connect(m_mediaPlaylist,SIGNAL(mediaInserted(int, int)),this,SLOT(mediaInsertedSlot(int,int)));
+    QTime time = QTime::currentTime();
+    qsrand((uint)time.msec());
+
     connect(m_player,SIGNAL(positionChanged(qint64)),this,SLOT(positionChangedSlot(qint64)));
     connect(m_player,SIGNAL(durationChanged(qint64)),this,SLOT(durationChangedSlot(qint64)));
     connect(m_player,SIGNAL(metaDataChanged()),SLOT(metaDataChangedSlot()));
-    connect(m_player, SIGNAL(seekableChanged(bool)),this,SLOT(seekableChangedSlot(bool)));
+    connect(m_player,SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)),this,SLOT(mediaStatusChangedSlot(QMediaPlayer::MediaStatus)));
     m_player->setVolume(100);
 }
 
@@ -45,7 +47,7 @@ void VetmupPlayer::OpenFiles(QList<QUrl> urls)
         isNewList = true;
 
     QList<QMediaContent> listOfContent = GetContent(urls);
-    m_mediaPlaylist->addMedia(listOfContent);
+    m_mediaPlaylist->append(listOfContent);
 
     foreach(QMediaContent mediaContent,listOfContent){
         QFileInfo fileInformation = QFileInfo(mediaContent.canonicalUrl().toString());
@@ -54,7 +56,9 @@ void VetmupPlayer::OpenFiles(QList<QUrl> urls)
     }
 
     if(isNewList){
-        m_player->setPlaylist(m_mediaPlaylist);
+        m_index = 0;
+        QMediaContent firstContent = m_mediaPlaylist->at(m_index);
+        m_player->setMedia(firstContent);
         m_player->play();
     }
 }
@@ -93,6 +97,7 @@ void VetmupPlayer::DeletePlaylist()
     {
         m_player->stop();
         m_mediaPlaylist->clear();
+        m_index = 0;
         emit deletePlaylistSignal();
     }
 }
@@ -101,9 +106,10 @@ void VetmupPlayer::NextSong()
 {
     if(HasSongs())
     {
+        QMediaPlayer::State actualState = m_player->state();
         m_player->stop();
-        m_mediaPlaylist->next();
-        m_player->play();
+        m_player->setMedia(m_mediaPlaylist->at(GetNextIndex()));
+        RestorePreviousState(actualState);
     }
 }
 
@@ -111,18 +117,22 @@ void VetmupPlayer::PreviousSong()
 {
     if(HasSongs())
     {
+        QMediaPlayer::State actualState = m_player->state();
         m_player->stop();
-        m_mediaPlaylist->previous();
-        m_player->play();
+        m_player->setMedia(m_mediaPlaylist->at(GetPreviousIndex()));
+        RestorePreviousState(actualState);
+
     }
 }
+
 
 void VetmupPlayer::PlaySong(int index)
 {
     if(HasSongs())
     {
         m_player->stop();
-        m_mediaPlaylist->setCurrentIndex(index);
+        m_index = index;
+        m_player->setMedia(m_mediaPlaylist->at(m_index));
         m_player->play();
     }
 }
@@ -130,42 +140,20 @@ void VetmupPlayer::PlaySong(int index)
 void VetmupPlayer::DeleteSong(int index)
 {
     //Only deletes the songs different at the current played/paused
-    if(m_mediaPlaylist->currentIndex() != index)
+    if(m_index != index)
     {
-        QMediaPlayer::State originalState = m_player->state();
-        int currentIndex = m_mediaPlaylist->currentIndex();
-        qint64 position = m_player->position();
-
-        //If the song deleted is before
-        if(index < currentIndex)
-        {
-            //Save the position of the player to set it when seekableChanged is thrown
-            m_previousPosition = position;
-            m_player->pause();
-            m_mediaPlaylist->removeMedia(index);
-            //Set the song to the currentIndex-1 because the song deleted was before
-            m_mediaPlaylist->setCurrentIndex(currentIndex-1);
-        }
-        //Else the song deleted is after
-        else
-        {
-            m_mediaPlaylist->removeMedia(index);
-        }
-
-        //Set the original state again
-        switch(originalState){
-           case QMediaPlayer::PlayingState:
-                m_player->play();
-                break;
-        }
-
+        m_mediaPlaylist->removeAt(index);
         //Emit delete song to update the UI in QML
         emit deleteSongSignal(index);
+
+        if(index<m_index)
+            m_index--;
+
     }
 }
 
 bool VetmupPlayer::HasSongs(){
-    if(m_mediaPlaylist->mediaCount()>0)
+    if(m_mediaPlaylist->count()>0)
         return true;
     else
         return false;
@@ -188,7 +176,12 @@ void VetmupPlayer::SetVolume(double volume)
 void VetmupPlayer::SavePlaylist(QUrl file)
 {
     if(HasSongs()){
-        if(m_mediaPlaylist->save(file,"m3u"))
+        QMediaPlaylist *mediaplaylist = new QMediaPlaylist(this);
+        for(int i= 0; i < m_mediaPlaylist->count(); i++) {
+            mediaplaylist->addMedia(m_mediaPlaylist->at(i));
+        }
+
+        if(mediaplaylist->save(file,"m3u"))
             qDebug()<<"File: "<<file<< " saved succesfully";
         else
             qDebug()<<"Error Saving File: "<<file;
@@ -199,9 +192,9 @@ void VetmupPlayer::SavePlaylist(QUrl file)
 void VetmupPlayer::ShufflePlaylist(bool enable)
 {
     if(enable)
-        m_mediaPlaylist->setPlaybackMode(QMediaPlaylist::Random);
+        m_random = true;
     else
-        m_mediaPlaylist->setPlaybackMode(QMediaPlaylist::Loop);
+        m_random = false;
 }
 
 /**********************************************************/
@@ -216,13 +209,14 @@ void VetmupPlayer::ShufflePlaylist(bool enable)
 
      foreach(QFileInfo audioFile,audioFiles){
 
-         if(audioFile.isFile() && (audioFile.suffix()=="mp3" || audioFile.suffix() =="wma" || audioFile.suffix() == "m4a")){
+         if(audioFile.isFile() && (audioFile.suffix()=="mp3" || audioFile.suffix() =="wma" || audioFile.suffix() == "m4a" || audioFile.suffix() == "m3u")){
              QString path = audioFile.absoluteFilePath();
              //If we are in android, add file:// to the path
              //It is necessary to the QMediaContent :/
-             #ifdef __ANDROID_API__
-                 path = path.prepend("file://");
-             #endif
+             //#ifdef __ANDROID_API__
+                 path = path.prepend("file:///");
+                 qDebug()<<"Path Open Folder: "<<path;
+             //#endif
             QUrl url = QUrl(path);
             listToReturn.append(url);
          }
@@ -237,25 +231,34 @@ void VetmupPlayer::ShufflePlaylist(bool enable)
      QList<QMediaContent> listOfMedia = QList<QMediaContent>();
      foreach(QUrl path,listOfSongs)
      {
-         QFileInfo fileInfo(path.toLocalFile());
-         qDebug()<<fileInfo.suffix();
+         QFileInfo fileInfo(path.toString());
          //Open Playlist m3u
          if(fileInfo.suffix() == "m3u")
          {
-             QList<QMediaContent> playList = OpenPlayList(path);
+             qDebug()<<"List path: "<<path;
+             QList<QMediaContent> playList = OpenPlayList(path.toString());
              listOfMedia.append(playList);
          }
          else
-            listOfMedia.append(QMediaContent(path));
+         {
+             qDebug()<<"Path:"<<path;
+             listOfMedia.append(QMediaContent(path));
+         }
+
      }
      return listOfMedia;
  }
 
  QList<QMediaContent> VetmupPlayer::OpenPlayList(QUrl path)
  {
+     //qDebug()<<"List path: "<<path;
+     QString pathToLoad = path.toString();
+     if(!pathToLoad.contains("file:///"))
+         pathToLoad= pathToLoad.prepend("file:///");
+
      QList<QMediaContent> list = QList<QMediaContent>();
      QMediaPlaylist playList(this);
-     playList.load(path,"m3u");
+     playList.load(pathToLoad,"m3u");
      for(int i = 0 ; i < playList.mediaCount(); i++)
         list.append(playList.media(i));
     return list;
@@ -272,21 +275,64 @@ void VetmupPlayer::ShufflePlaylist(bool enable)
      else
          return time.toString("mm:ss");
  }
+
+ void VetmupPlayer::RestorePreviousState(QMediaPlayer::State previousState)
+ {
+     switch(previousState){
+         case QMediaPlayer::State::PlayingState:
+             m_player->play();
+             break;
+         case QMediaPlayer::State::PausedState:
+             m_player->pause();
+             break;
+     }
+ }
+
+ int VetmupPlayer::RandInt(int low, int high)
+{
+     // Random number between low and high
+     return qrand() % ((high + 1) - low) + low;
+}
+
+
+int VetmupPlayer::GetNextIndex(){
+ if(m_random)
+ {
+     m_index = RandInt(0,m_mediaPlaylist->count()-1);
+ }
+ else
+ {
+     if(m_index == m_mediaPlaylist->count()-1)
+         m_index = 0;
+     else
+         m_index++;
+
+ }
+ return m_index;
+}
+
+int VetmupPlayer::GetPreviousIndex(){
+ if(m_random)
+ {
+     m_index = RandInt(0,m_mediaPlaylist->count()-1);
+
+ }
+ else
+ {
+     if(m_index == 0)
+         m_index = m_mediaPlaylist->count()-1;
+     else
+         m_index--;
+
+ }
+ return m_index;
+}
  /**********************************************************/
 
 
  /*********************Private Slots *********************/
- void VetmupPlayer::mediaInsertedSlot(int,int)
-{
-    qDebug()<<"List of songs";
-    for(int i = 0; i < m_mediaPlaylist->mediaCount();i++)
-    {
-        qDebug()<<m_mediaPlaylist->media(i).canonicalUrl();
-    }
-}
 
 void VetmupPlayer::positionChangedSlot(qint64 position){
-    qDebug()<<"positionChangedSlot: "<<position;
     QString timeString = GetTimeString(position);
     //Notify the UI to set the slider position
     emit sliderPositionChangedSignal(position,timeString);
@@ -295,10 +341,10 @@ void VetmupPlayer::positionChangedSlot(qint64 position){
 void VetmupPlayer::durationChangedSlot(qint64 duration)
 {
     if(duration >0){
-        QFileInfo fileInformation = QFileInfo(m_mediaPlaylist->currentMedia().canonicalUrl().toString());
+        QFileInfo fileInformation = QFileInfo(m_mediaPlaylist->at(m_index).canonicalUrl().toString());
         VetmupSong song =  VetmupSong(fileInformation.completeBaseName(),duration);
         QString durationString = GetTimeString(duration);
-        emit songChangedSignal(song.GetTitle(),song.GetDuration(),durationString,m_mediaPlaylist->currentIndex());
+        emit songChangedSignal(song.GetTitle(),song.GetDuration(),durationString,m_index);
     }
 }
 
@@ -341,14 +387,13 @@ void VetmupPlayer::metaDataChangedSlot()
     }
 }
 
-void VetmupPlayer::seekableChangedSlot(bool seekable)
+
+void VetmupPlayer::mediaStatusChangedSlot(QMediaPlayer::MediaStatus status)
 {
-    if(seekable){
-        if(m_previousPosition>0){
-            qDebug()<<"Set position in seekable: " << m_previousPosition;
-            m_player->setPosition(m_previousPosition);
-            m_previousPosition = 0;
-        }
+    switch(status){
+        case QMediaPlayer::MediaStatus::EndOfMedia:
+            this->NextSong();
+            break;
     }
 }
 
